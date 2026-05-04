@@ -1,0 +1,68 @@
+
+OUTLINE: 
+1. Make essential Imports
+2. Set neck arduino object
+3. Find encodings for local people
+4. Initialise camera and Detector objects
+
+5. Give acknowledgement to BOSS
+
+6. Continuosly check for commands on WS file
+If "-1" in WS to stop, then break out of loop.
+Else if "0":
+    Go to inactive state
+else if command for mode == 1:
+    Set to focus and recognize mode
+    If found the admin, then change his last seen time and rewrite it in lastSeen.txt file from Feels Module
+    If a known person is recognized, then greet him according to the Robot's sense of professionality.
+    If unknown person is recognized, then just say Hi to the person.
+    Remember last 7 faces, inclusive of known and unknown people.
+
+    Check where people are in the eye frame of the robot and randomly face them while talking in a span of NECK_MOVEMENT_TIME
+    Also, if a new person enters into the frame, then look towards him/her irrespective of NECK_MOVEMENT_TIME.
+
+else if mode == 2:
+    set to headshot mode
+    Play a sound to acknowledge that the robot is entering headshot mode
+    Try for max 3 times before a photo is discarded because it was blurred.
+    If photo is success:
+        Send command to hear module to go inactive.
+        Ask for person to tell their name.
+        Re-encode all photos and faces.
+        Replay hearing module by setting it to "1" mode
+
+else if mode == 3:
+    set to Indian Sign Language recognition mode
+    Find hands in the frame, at max 2
+    If hands found in frame:
+        Resize the frame to golden ratio
+        Feed the image to classifier to check for Sign
+
+else if mode == 4:
+    set to Follow Me mode
+    Call PoseDetector object to find body in the frame.
+    If body found, then estimate its distance from the camera through len's formula
+    Send an adequate command to the Drive Base module based on the position of the person in front of the robot.
+
+7. If error in passing to Arduino, then break out of loop.
+
+8. Close files
+
+MAJOR FUNCTIONS:
+1. findEncodings(): Finds mediapipe encodings of the face objects from images kept in the database
+
+PROPOSED GLOBAL VARIABLES:
+hx -= 20
+hw += 40
+hh += 20
+hy -= 20
+shouldCheck = True
+shouldRotate= True
+photoSession= 0
+photoSuccess= False
+
+PROPOSED CONSTANTS:
+fw = 800
+fh = 900
+imgSize = 300
+NECK_MOVEMENT_TIME= 10

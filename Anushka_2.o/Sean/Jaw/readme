@@ -1,0 +1,18 @@
+
+
+OUTLINE: 
+1. Make essential Imports
+
+2. Set jaw arduino objects
+
+3. Set initial gesture
+
+4. Give acknowledgement to BOSS
+
+5. Continuosly check for commands on WS file
+If got: transfer it to Arduino object
+
+6. If "-1" in WS to stop, then break out of loop.
+7. If error in passing to Arduino, then break out of loop.
+
+8. Close files

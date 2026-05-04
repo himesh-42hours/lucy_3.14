@@ -1,0 +1,11 @@
+
+continuously check for incoming WS
+
+if something coming with "Error/log etc"
+trigger textSender
+
+else if "SendFile":
+    trigger fileUploder
+
+else if "-1":
+    break

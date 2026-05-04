@@ -1,0 +1,22 @@
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+.venv-*/
+
+# Local deps/cache
+.deps/
+
+# OS/editor
+.DS_Store
+.vscode/

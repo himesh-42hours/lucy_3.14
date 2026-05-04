@@ -1,0 +1,11 @@
+1. Libraries import
+2. File paths declaration
+
+Mixer chaalu karna hai.
+Pehle initial loud heartbeat play hogi.
+>. System started notification
+
+Fir continuous normal heartbeat play hogi indefinitely jab tak BOSS WS me na likh de stop hone ko.
+Stopping code as usual "-1" rahega ji.
+
+Heartbeat ruk gyi to LMAO DEAD ho jayega.

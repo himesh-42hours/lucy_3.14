@@ -1,0 +1,43 @@
+NAME: Drive Base Module
+DATE OF CREATION: 04/11/22
+VERSION HISTORY: 
+23/06/23: Changed entire schema for deployment of Chetak instead of Firebird mechanism
+Badhe kutto wale din nikle bhai ye wale. Firebird ne leni deni kardi par ab jaake theek hua hai bkl!
+Ab naya program banega kyuki ab firebird ka chodbhangra khatam. AB mera khudka rahega backend bhi aur frontend bhi!
+
+AUTHOR'S NAME: Himesh Vijay
+
+OUTLINE: 
+# Init methods
+
+# Check for values coming from other modules
+
+comm= driveBaseWS.readline()
+
+    if len(comm) == 0:
+        continue
+
+    if comm == "-1":
+        break
+
+    # print(comm)
+    if "left" in comm:
+        if comm == "@left":
+            didMove= move(leftcommand, 1)
+        else:
+            didMove= move(leftcommand, 5)
+
+    elif "right" in comm:
+        if comm == "@right":
+            didMove= move(rightcommand, 1)
+        else:
+            didMove= move(rightcommand, 5)
+
+    elif "forward" in comm or "ahead" in comm:
+        step= extractStep(comm)
+        print(step)
+        didMove= move(forcommand, step)
+
+    elif ListCheck(["back", "behind", "reverse"], comm):
+        step= extractStep(comm)
+        didMove= move(backcommand, step)

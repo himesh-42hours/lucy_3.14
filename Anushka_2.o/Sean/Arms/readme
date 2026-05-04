@@ -1,0 +1,38 @@
+NAME: Hand Module
+DATE OF CREATION: 04/11/22
+AUTHOR'S NAME: Himesh Vijay
+
+OUTLINE: 
+1. Make essential Imports
+
+2. Set hands arduino objects
+3. Set palms arduino object
+
+4. Define all basic position setter functions for hands and palms
+5. Define all gesture functions for hands as well as palms
+
+6. Set initial gesture
+
+7. Give acknowledgement to BOSS
+
+8. Continuously check for commands on WS file
+If got: Check for gesture mapping and call respective function for servo motor manipulation
+
+9. If "-1" in WS to stop, then break out of loop.
+10. If error in passing to Arduino, then break out of loop.
+
+11. Close files
+
+MAJOR FUNCTIONS:
+1. setValsAll() : Accepts values of servo motors for one of the both hands and generates command to be sent to respective hand microcontroller board.
+
+2. setAllFingers() : Accepts values of servo motor positions for one of the both hands at a time and generates command to be sent to palm arduino.
+Ensures that mirror-image phenomenon is taken care of in case of sending command to left hand.
+
+PROPOSED GLOBAL VARIABLES:
+
+PROPOSED CONSTANTS:
+leftPortNum= 3
+rightPortNum= 4
+PalmPort = 17
+HANDS_UPLIFT_TIME= 6 : Proposed time of the hand remaining suspended for movement in air

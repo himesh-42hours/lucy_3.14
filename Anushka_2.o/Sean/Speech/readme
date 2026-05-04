@@ -1,0 +1,14 @@
+
+OUTLINE: 
+1. Make essential Imports
+2. Initialise engine and set property to voice with speech rate= 170
+
+3. This module will have two functions:
+> speak: To only speak
+> speakAndGest: To also make hand gestures while speaking corresponding to words said
+
+4. Calculate run time for each speech output file and round it. Write this in JawWS file
+5. Wait a given time for jaw syncronisation
+6. If speakAndGest is called, then find the apt gesture and write to the Arms file.
+7. Say the sentence
+8. Remoce the temp file generated for estimating time for jaw

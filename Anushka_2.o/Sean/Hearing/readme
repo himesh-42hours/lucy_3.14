@@ -1,0 +1,54 @@
+
+OUTLINE: 
+1. Make essential Imports
+2. Import essential APIs
+
+3. Create 'Now.txt' file for conversation storage
+
+4. Give acknowledgement to BOSS
+
+5. Continuosly check for commands on WS file
+a. If "-1" in WS to stop, then break out of loop.
+b. If "0": go to sleep and write in HearCom file to acknowledge that it has gone to sleep
+c. If "1": The hearing systems go in active mode. 
+Here, if s2t() helps to get user query. 
+Write to eye module WS to move in a random direction to show 'thinking' phase.
+Translate query to english
+Write the query in Now.txt file.
+Check if query is any of these:
+CustomCheck. SettingsCheck, CommandsCheck, BigBubble, OfflineChatbot, Chatbot
+
+6. Close files
+
+MAJOR FUNCTIONS:
+1. queries2ChatLog(): Creates a string from the last query and result to be appended at the end of chatlog for new query. This is essential for the AI to remember last 10 convos
+
+2. replyBrain(): Takes a question and generates apt reply by keeping in context the following things.
+a. Knowledge base of the robot (ex- Where is EC dept., where is canteen)
+b. Character file (The 'ahankara' aspect of the AI)
+c. Last 5 queries (Returned from queries2Chatlog)
+
+3. s2t(): Provides speech to text conversion using google_S2T
+
+4. hinToEng(): Provides hindi to english translation
+
+5. CustomCheck(): Checks if a query is a custom check request.
+Returns False if not so
+
+6. SettingsCheck(): Checks if a query is an attempt to change the admin setting of the robot.
+Returns False if not so
+
+7. CommandsCheck(): Checks if a given query is a direct command to the robot
+Returns False if not so
+
+8. ReplyOffline(): Generates offline response for a given query. If it is not able to do so, return False
+
+9. BigBubble(): Contains all the commands that can be given to the robot that add a functionality to the robot. (ex- Application printing, weather forecasting)
+
+
+PROPOSED GLOBAL VARIABLES:
+mode= "0"
+lastMode= "0"
+
+PROPOSED CONSTANTS:
+r.pause_threshold= 0.5

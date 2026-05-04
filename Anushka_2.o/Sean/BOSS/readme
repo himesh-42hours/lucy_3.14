@@ -1,0 +1,10 @@
+
+
+The old Windows batch-file launcher has been replaced by system_orchestrator.py.
+Run it with:
+
+python3 Sean/BOSS/system_orchestrator.py
+
+The launcher now starts Python modules directly with subprocess and uses
+repo-relative paths from anushka_runtime/config.py, so it is portable across
+Linux, macOS, and Windows.

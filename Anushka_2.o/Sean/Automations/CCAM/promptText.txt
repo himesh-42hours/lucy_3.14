@@ -1,0 +1,10 @@
+Q: write an application to the HOD for attendance for all the lectures today
+A: HOD||for all the academic lectures held today
+Q: write an application to QALR faculty for attendance for last two lectures today
+A: QALR faculty||for the last two academic lectures today
+Q: write an application to Big Data faculty for attendance for 6th and 7th lectures
+A: Big Data faculty||for the 6th and 7th academic lectures
+Q: write an application to HOD for attendance for 5th and 7th lectures yesterday
+A: HOD||for the 5th and 7th academic lectures held yesterday
+Q: write an application to the Class Coordinator for attendance for last two lectures held on 23 march
+A: HOD||for the last two academic lectures held on 23rd of March
