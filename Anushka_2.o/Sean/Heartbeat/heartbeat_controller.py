@@ -42,6 +42,14 @@ def _diag(message: str) -> None:
         pass
 
 
+def _parent_is_gone() -> bool:
+    """If boss dies abruptly, heartbeat should not keep playing forever."""
+    try:
+        return os.getppid() == 1
+    except Exception:
+        return False
+
+
 def play_once(audio_path: Path, watch_shutdown: bool = True) -> None:
     if not audio_path.exists():
         return
@@ -87,6 +95,9 @@ def main() -> None:
         while True:
             if _shutdown_requested:
                 break
+            if _parent_is_gone():
+                _shutdown_requested = True
+                break
             command = read_available(reader)
             if not command:
                 time.sleep(0.1)
@@ -98,6 +109,14 @@ def main() -> None:
         if audio_ok:
             try:
                 pygame.mixer.music.stop()
+            except Exception:
+                pass
+            try:
+                pygame.mixer.quit()
+            except Exception:
+                pass
+            try:
+                pygame.quit()
             except Exception:
                 pass
             # Skip the closing fanfare during shutdown so the process exits promptly.

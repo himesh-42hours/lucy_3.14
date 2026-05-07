@@ -14,20 +14,30 @@ MONITOR_WS_FILE = SEAN_ROOT / "Monitor" / "monitorWS.txt"
 REMEMBER_WAV = SEAN_ROOT / "Resources" / "RememberHmm.wav"
 
 
+def _vision_stage(message: str) -> None:
+    try:
+        with open(VISION_EF_FILE, "a", encoding="utf-8") as handle:
+            handle.write(f"{message}\n")
+    except Exception:
+        pass
+
+
 try:
+    _vision_stage("vision: import block start")
     import sys
     import time
     import platform
+    import traceback
     from playsound import playsound
     import serial
     for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
         if entry not in sys.path:
             sys.path.insert(0, entry)
-    from anushka_runtime.config import CAMERA_INDEX
+    from anushka_runtime.config import CAMERA_INDEX, CAMERA_NAME_HINT, CAMERA_SOURCE
     from Speech.essentialFunctions import *
     from Hearing.essentialFunctions import *
     from runtime_helpers import *
-    speak("Initiating vision module. This may take some while.")
+    _vision_stage("vision: core helpers imported")
     import cv2
     from cvzone.HandTrackingModule import HandDetector
     #// from cvzone.ClassificationModule import Classifier
@@ -39,11 +49,20 @@ try:
     import face_recognition
     import os
     import numpy as np
+    _vision_stage("vision: vision libraries imported")
 
-except:
+except Exception as exc:
+    import traceback
+
+    error_message = f"Error importing modules for vision: {exc!s}\n{traceback.format_exc()}\n"
     visionEF= open(VISION_EF_FILE, 'a')
-    visionEF.write("Error importing modules for vision")
+    visionEF.write(error_message)
     visionEF.close()
+    try:
+        sys.stderr.write(f"[vision] {error_message}")
+        sys.stderr.flush()
+    except Exception:
+        pass
     exit()
 
 
@@ -51,8 +70,9 @@ path= str(FACES_DIR)
 images= []
 classNames= []
 myList= os.listdir(path)
+_vision_stage(f"vision: loading {len(myList)} known face image(s)")
 fw = 800
-fh = 900
+fh = 600
 imgSize = 300
 
 def allSame(lst):
@@ -77,23 +97,40 @@ def findEncodings(images):
     return encodeList
 
 encodeListKnown= findEncodings(images)
+_vision_stage(f"vision: encoded {len(encodeListKnown)} known face(s)")
 print("Encoding Complete :)")
 
 try:
     if platform.system() == "Windows":
-        cam=cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_DSHOW)
+        if isinstance(CAMERA_SOURCE, int):
+            cam=cv2.VideoCapture(CAMERA_SOURCE, cv2.CAP_DSHOW)
+        else:
+            cam=cv2.VideoCapture(CAMERA_SOURCE)
     else:
-        cam=cv2.VideoCapture(CAMERA_INDEX)
+        if isinstance(CAMERA_SOURCE, int) and hasattr(cv2, "CAP_V4L2"):
+            cam=cv2.VideoCapture(CAMERA_SOURCE, cv2.CAP_V4L2)
+        else:
+            cam=cv2.VideoCapture(CAMERA_SOURCE)
+    if not cam or not cam.isOpened():
+        raise RuntimeError(
+            f"Camera source {CAMERA_SOURCE!r} did not open"
+            + (f" (hint: {CAMERA_NAME_HINT})" if CAMERA_NAME_HINT else "")
+        )
+    try:
+        cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+    except Exception:
+        pass
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, fw)
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, fh)
-except:
+    _vision_stage(f"vision: camera {CAMERA_SOURCE!r} opened")
+except Exception as exc:
     visionEF= open(VISION_EF_FILE, 'a')
-    visionEF.write("Error opening camera for vision module")
+    visionEF.write(f"Error opening camera for vision module: {exc!s}\n")
     visionEF.close()
     exit()
 
-detector = HandDetector(maxHands=2)
-myFaceDetector = FaceDetector(0.6)
+detector = None
+myFaceDetector = None
 #// classifier = Classifier("Vision/model/keras_model.h5", "Vision/model/labels.txt")
 
 visionWS= open(VISION_WS_FILE, 'r')
@@ -102,7 +139,7 @@ lastFace= "Hi"
 
 mode= 0
 
-speak("Vision module is now active and running.")
+_vision_stage("vision: startup complete")
 
 visionEF= open(VISION_EF_FILE, 'a')
 visionEF.write("1")
@@ -117,8 +154,53 @@ prevTime= time.time()
 metImportantPerson= False
 GARDAN_MOVEMENT_TIME= 2
 
-psDetector= PoseDetector()
-fmDetector= FaceMeshDetector(maxFaces=1)
+psDetector= None
+fmDetector= None
+
+
+def get_face_detector():
+    global myFaceDetector
+    if myFaceDetector is None:
+        myFaceDetector = FaceDetector(0.6)
+    return myFaceDetector
+
+
+def get_hand_detector():
+    global detector
+    if detector is None:
+        detector = HandDetector(maxHands=2)
+    return detector
+
+
+def get_pose_detector():
+    global psDetector
+    if psDetector is None:
+        psDetector = PoseDetector()
+    return psDetector
+
+
+def get_face_mesh_detector():
+    global fmDetector
+    if fmDetector is None:
+        fmDetector = FaceMeshDetector(maxFaces=1)
+    return fmDetector
+
+
+def read_frame(max_attempts=3, delay_seconds=0.08):
+    for _ in range(max_attempts):
+        ret, frame = cam.read()
+        if ret and frame is not None:
+            return True, frame
+        time.sleep(delay_seconds)
+    return False, None
+
+
+ok, _frame = read_frame(max_attempts=2, delay_seconds=0.15)
+if not ok:
+    visionEF= open(VISION_EF_FILE, 'a')
+    visionEF.write(f"Error opening camera for vision module: camera {CAMERA_SOURCE!r} opened but no frames were received\n")
+    visionEF.close()
+    exit()
 
 while True:
         
@@ -172,17 +254,18 @@ while True:
         except:
             pass
         
-        ret, img = cam.read()
+        ret, img = read_frame()
         if not ret:
             errFile= open(VISION_EF_FILE, 'a')
-            errFile.write("No images aquired during cam read operation. System going to shutdown")
+            errFile.write("Vision warning: no image acquired during recognition frame read; retrying\n")
             errFile.close()
-            break  #replace with continue in final issue
+            time.sleep(0.2)
+            continue
 
         newTime= time.time()
-        img, bboxs = myFaceDetector.findFaces(img, draw= False)
+        img, bboxs = get_face_detector().findFaces(img, draw= False)
         kk= img.copy()
-        tt, battle= myFaceDetector.findFaces(kk, draw= True)
+        tt, battle= get_face_detector().findFaces(kk, draw= True)
         if not bboxs:
             shouldCheck= True       #should check for new faces when there were no face last time
             shouldRotate= True
@@ -451,7 +534,7 @@ while True:
         photoSuccess= False
         while photoSession<3:
             try:
-                newRet, newImg= cam.read()
+                newRet, newImg= read_frame(max_attempts=5, delay_seconds=0.15)
                 nayiImageKiEncodings= face_recognition.face_encodings(newImg)[0]
                 photoSession=3
                 photoSuccess= True
@@ -517,7 +600,7 @@ while True:
             pass
             
         lastThree = [0]
-        hands, img = detector.findHands(img, drawBox=False)
+        hands, img = get_hand_detector().findHands(img, draw=False)
         # print(len(hands))
         if len(hands) == 0:
             continue
@@ -654,17 +737,18 @@ while True:
     
     elif mode == 4:
         # print("Follow me mode on")
-        ret, meriimg = cam.read()
+        ret, meriimg = read_frame()
         if not ret:
             errFile= open(VISION_EF_FILE, 'a')
-            errFile.write("No images aquired during cam read operation. System going to shutdown")
+            errFile.write("Vision warning: no image acquired during follow-mode frame read; retrying\n")
             errFile.close()
-            break  #replace with continue in final issue
+            time.sleep(0.2)
+            continue
 
         #todo Add the code after testing
         
-        meriimg= psDetector.findPose(meriimg, draw= False)
-        lmList, bboxInfo= psDetector.findPosition(meriimg, draw= False)
+        meriimg= get_pose_detector().findPose(meriimg, draw= False)
+        lmList, bboxInfo= get_pose_detector().findPosition(meriimg, draw= False)
 
         if bboxInfo:
             cenn= bboxInfo['center']
@@ -679,7 +763,7 @@ while True:
             # cv2.putText(img, "C", centMid, cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 1)
             
             # w, img, _ = psDetector.findDistance(leftShol, rightShol, img, True)
-            w, _= fmDetector.findDistance(rightShol, leftShol)
+            w, _= get_face_mesh_detector().findDistance(rightShol, leftShol)
             W= 36.6
             
             # d= 30
@@ -730,7 +814,7 @@ while True:
                 print("Stop")
                 time.sleep(0.1)
 
-speak("Visions systems have now been turned off.")
+_vision_stage("vision: shutdown")
 visionWS.close()
 visionEF= open(VISION_EF_FILE, 'a')
 visionEF.write("2")

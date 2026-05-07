@@ -19,8 +19,9 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
 
 from anushka_runtime.config import (
     AUX_MEGA_PORT,
-    CAMERA_INDEX,
+    CAMERA_SOURCE,
     CONTROL_FILES,
+    ENABLE_EARLY_GREETING,
     ENABLE_MONITORING,
     ENABLE_VISION,
     LEFT_ARM_MEGA_PORT,
@@ -163,7 +164,7 @@ def _run_early_greeting() -> bool:
 
     try:
         result = engine.greet_if_person_in_frame(
-            camera_index=CAMERA_INDEX,
+            camera_source=CAMERA_SOURCE,
             speak_fn=speak,
         )
     except Exception as exc:
@@ -216,7 +217,7 @@ def main() -> None:
             # Vision-first greeting: run it BEFORE the vision subprocess takes
             # the camera. If vision is disabled, the greeting still fires once
             # before hearing starts (handled below).
-            if spec.name == "vision" and not greeting_done and not SMOKE_TEST:
+            if spec.name == "vision" and ENABLE_EARLY_GREETING and not greeting_done and not SMOKE_TEST:
                 greeting_done = _run_early_greeting()
 
             if spec.name == "hear" and not greeting_done and not SMOKE_TEST:
@@ -234,6 +235,7 @@ def main() -> None:
                 if spec.optional:
                     monitor_error(error)
                     _console(f"Optional module skipped: {error}")
+                    processes.pop(spec.name, None)
                     continue
                 failure_message = error
                 monitor_error(error)
@@ -242,6 +244,9 @@ def main() -> None:
             started.append(spec.name)
             monitor_log(f"{spec.name} module is active and running.")
             _console(f"{spec.name} ready.")
+            if spec.name == "vision":
+                append_message(CONTROL_FILES["vision"], "1")
+                _console("vision set to recognition mode.")
 
         if failure_message:
             try:

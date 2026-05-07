@@ -1,0 +1,8 @@
+vision: import block start
+vision: core helpers imported
+vision: vision libraries imported
+vision: loading 6 known face image(s)
+vision: encoded 6 known face(s)
+vision: camera '/dev/v4l/by-id/usb-Image+_Owl_4K_PRO_Camera_HU12345679876543-video-index0' opened
+vision: startup complete
+1
