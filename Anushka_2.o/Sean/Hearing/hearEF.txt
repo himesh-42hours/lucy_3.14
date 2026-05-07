@@ -1,0 +1,39 @@
+Microphone: pulse (ANUSHKA_MIC_DEVICE_INDEX env override).
+Skipping ambient calibration: using fixed energy threshold (energy_threshold=300).
+Mic RMS sample: 144
+1
+Listening... (energy_threshold=300)
+Listen timeout (RMS=140)
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: google
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: Can you recognize me?
+Normalized: can you identify me?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: Look at the camera again.
+Normalized: look at the camera again.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: Tell me a bit about yourself.
+Normalized: please share some information about yourself.
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: Can you program yourself?
+Normalized: can you self-program?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: your development team.
+Normalized: your development team.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: google
+2

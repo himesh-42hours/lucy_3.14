@@ -31,6 +31,17 @@ def _int_env(name: str, default: Optional[int]) -> Optional[int]:
         return default
 
 
+def camera_source_from_env(name: str, default: int | str = 0) -> int | str:
+    raw_value = os.getenv(name)
+    if raw_value is None or raw_value.strip() == "":
+        return default
+    raw_value = raw_value.strip()
+    try:
+        return int(raw_value)
+    except ValueError:
+        return raw_value
+
+
 def _float_env(name: str, default: float) -> float:
     raw_value = os.getenv(name)
     if raw_value is None or raw_value.strip() == "":
@@ -145,7 +156,8 @@ TTS_INSTRUCTIONS = os.getenv(
 TTS_SPEED = _float_env("ANUSHKA_TTS_SPEED", 0.95)
 MIC_DEVICE_INDEX = _int_env("ANUSHKA_MIC_DEVICE_INDEX", None)
 MIC_NAME_HINT = os.getenv("ANUSHKA_MIC_NAME_HINT", "ReSpeaker").strip()
-CAMERA_INDEX = _int_env("ANUSHKA_CAMERA_INDEX", 0)
+CAMERA_SOURCE = camera_source_from_env("ANUSHKA_CAMERA_SOURCE", 0)
+CAMERA_INDEX = CAMERA_SOURCE if isinstance(CAMERA_SOURCE, int) else 0
 CAMERA_NAME_HINT = os.getenv("ANUSHKA_CAMERA_NAME_HINT", "Kreo").strip()
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
@@ -153,6 +165,7 @@ OPENWEATHER_DEFAULT_CITY = os.getenv("OPENWEATHER_DEFAULT_CITY", "Ghaziabad").st
 
 ENABLE_VISION = _bool_env("ANUSHKA_ENABLE_VISION", False)
 ENABLE_MONITORING = _bool_env("ANUSHKA_ENABLE_MONITORING", True)
+ENABLE_EARLY_GREETING = _bool_env("ANUSHKA_ENABLE_EARLY_GREETING", False)
 
 MONITOR_URL = os.getenv("ANUSHKA_MONITOR_URL", "http://10.21.69.5:3000").rstrip("/")
 

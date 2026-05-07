@@ -1,5 +1,6 @@
 from .config import (
     CHAT_MODEL,
+    CAMERA_SOURCE,
     CONTROL_FILES,
     CAMERA_INDEX,
     CAMERA_NAME_HINT,

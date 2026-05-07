@@ -6,7 +6,6 @@
 
   ARM:a1,a2,a3,a4
   HAND:f1,f2,f3,f4,f5
-  SPECIAL:JAADUTONA
 
   Update the pin arrays below to match your actual wiring on each Mega.
 */

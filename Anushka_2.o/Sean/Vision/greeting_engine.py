@@ -203,7 +203,7 @@ class GreetingEngine:
 
     def greet_if_person_in_frame(
         self,
-        camera_index: int = 0,
+        camera_source=0,
         max_attempts: int = 5,
         attempt_delay: float = 0.4,
         speak_fn=None,
@@ -218,9 +218,9 @@ class GreetingEngine:
 
         cap = None
         try:
-            cap = self._cv2.VideoCapture(camera_index)
+            cap = self._cv2.VideoCapture(camera_source)
             if not cap or not cap.isOpened():
-                _diag(f"Camera {camera_index} did not open; skipping early greeting.")
+                _diag(f"Camera {camera_source} did not open; skipping early greeting.")
                 return None
 
             for attempt in range(max_attempts):
@@ -278,13 +278,13 @@ def get_default_engine() -> GreetingEngine:
 
 
 def greet_if_person_in_frame(
-    camera_index: int = 0,
+    camera_source=0,
     speak_fn=None,
     max_attempts: int = 5,
 ) -> Optional[tuple[str, str]]:
     """Module-level convenience wrapper around the default engine."""
     return get_default_engine().greet_if_person_in_frame(
-        camera_index=camera_index,
+        camera_source=camera_source,
         max_attempts=max_attempts,
         speak_fn=speak_fn,
     )

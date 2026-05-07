@@ -1,28 +1,10 @@
-Query: All the components systems are now running.
-Anooshka: That's great to hear! It means I'm all set to assist you. How can I help you today?
-Query: Hello.
-Anooshka: A very good evening! I am Anooshka. How may I help you?
-Query: ویرسکائنٹ کینٹین
-Anooshka: I'm sorry, but I don't have specific information about "ویرسکائنٹ کینٹین." If you could provide more context or ask about something else, I'd be happy to assist you!
-Query: انسان کو ٹائم سمجھنے کی نئی یوں بولنا پڑتا ہے
-Anooshka: I'm here to assist you in English. If you have a question or topic you'd like to discuss, please feel free to share!
-Query: کے آئی ٹی کینٹین
-Anooshka: The main cafeteria canteen is present only at a distance of 50 meters from the reception area. Take the straight path and you will find it to your right.
-Query: Where is MCA block?
-Anooshka: The Electronics and Communication building, B block, is roughly in the centre of the campus. From the reception, take the straight path. Just after 100 meters you will find a sign board for B block.
-Query: ठीक है चल, नहीं रहेगा मेरे साथ, समझ लो मेरा जो चार साल तेरे साथ बिताए सब झूठ था। आखिर में तूने भी ब्रैंड न्यू टू डोर फिगर कनवर्टिबल कार
-Anooshka: I apologize, but I don't quite understand that. If you could clarify or ask about something else, I'd be happy to help!
-Query: Handiprozess komplett. Done.
-Anooshka: It seems like you're referring to something specific, but I'm not quite sure what "Handiprozess" means. If you could provide more context or details, I'd be glad to assist you!
-Query: Quién ouos Einstein?
-Anooshka: My name is Anooshka. I love interacting with people around me.
-Query: एमडिफ्रेंचियल और स्मूथ इसके अंदर आप लोगों को गियरबॉक्स मिलता है। रियर टायर 255/35
-Anooshka: It seems like you're discussing some technical specifications, possibly related to vehicles. However, I'm not an expert in automotive details. If you have specific questions or need information about something else, feel free to ask!
-Query: Stream under back by four.
-Anooshka: I'm not sure I understand what you mean by "Stream under back by four." Could you please clarify or provide more context? I'm here to help!
-Query: 啊,你我明。
-Anooshka: I see you're using Chinese. However, I primarily communicate in English or Hindi. If you have a question or need assistance, please feel free to ask in either of those languages!
-Query: Oranin ager game.
-Anooshka: It seems like there might be a typo or a mix-up in your message. Could you please clarify what you mean by "Oranin ager game"? I'm here to help!
-Query: شٹ ڈاؤن
-Anooshka: Goodbye. Shutting the system down now.
+Query: Can you recognize me?
+Anooshka: Yes, Dr. Manoj Goyal! It's great to see you! How can I assist you today?
+Query: Look at the camera again.
+Anooshka: I see you, Dr. Manoj Goyal! Thank you for your guidance. How can I help you further?
+Query: Tell me a bit about yourself.
+Anooshka: Hi. I am Anooshka, the humanoid robot designed and developed at k i e t Group of Institutions, Ghaziabad, Delhi NCR. I am smart enough to solve all human queries and love to interact with humans.
+Query: Can you program yourself?
+Anooshka: No, I cannot program myself. My programming and updates are handled by my developer team. They ensure that I function effectively and can assist you as best as possible.
+Query: your development team.
+Anooshka: Hello, Dr. Manoj Goyal! My development team includes Mr. Vunsh Tyaa gee and Mr. Koonwar Singh, who maintained my power supply; Mr. Heemesh Vijai and Mr. Gurv Uggurwaal, who programmed me; and Mr. Kwaazi Jiyaur Rahmaan and Mr. Pree yanshoo Kumaaar, who gave me my shape. They all played a crucial role in bringing me to life!
