@@ -1,0 +1,38 @@
+{
+  "father": {
+    "display_name": "Himesh Vijay",
+    "greeting": "Hello. Nice to meet you Himesh Vijay.",
+    "gesture": "3",
+    "aliases": ["father", "himesh"]
+  },
+  "Dr_Manoj_Goyal": {
+    "display_name": "Doctor Manoj Goyal",
+    "greeting": "Pruhnaum sir. Nice to meet you Doctor Manoj Goyal.",
+    "gesture": "3",
+    "aliases": ["manoj", "dr_manoj_goyal", "doctor manoj goyal"]
+  },
+  "Sareesh_Agarwal": {
+    "display_name": "Sareesh Agarwal",
+    "greeting": "Hello sir. Nice to meet you Mister Sareesh Agarwal.",
+    "gesture": "3",
+    "aliases": ["sareesh", "agarwal"]
+  },
+  "Suneel_Gupta": {
+    "display_name": "Suneel Gupta",
+    "greeting": "Hello sir. Nice to meet you Mister Suneel Gupta.",
+    "gesture": "3",
+    "aliases": ["suneel", "gupta"]
+  },
+  "beta ji": {
+    "display_name": "Beta ji",
+    "greeting": "Hello there. Nice to meet you.",
+    "gesture": "6",
+    "aliases": ["beta ji"]
+  },
+  "mama ji": {
+    "display_name": "Mama ji",
+    "greeting": "Hello there. Nice to meet you.",
+    "gesture": "6",
+    "aliases": ["mama ji"]
+  }
+}

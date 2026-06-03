@@ -19,6 +19,7 @@ import serial
 
 from anushka_runtime.config import CONTROL_FILES, LEFT_ARM_MEGA_PORT, RIGHT_ARM_MEGA_PORT, STATUS_FILES
 from anushka_runtime.ipc import append_message, open_reader, read_available
+from Arms.gesture_registry import resolve_gesture
 
 leftCommand = "ARM:90,90,90,90"
 rightCommand = "ARM:90,90,90,90"
@@ -277,6 +278,200 @@ def callMe():
     setValsAll(righth, 100, 75, 0, 90)
 
 
+def do_home_open():
+    homePos(lefth)
+    openPalm(0)
+    time.sleep(2)
+    homePos(righth)
+    openPalm(1)
+
+
+def do_yawn_stretch():
+    YawnStretch()
+
+
+def do_shake_hand():
+    shakeHand()
+    shakeHandPalm(1)
+
+
+def do_point_left():
+    pointLeft()
+    pointPalm(0)
+
+
+def do_point_right():
+    pointRight()
+    pointPalm(1)
+
+
+def do_open_right():
+    Seedha(righth)
+    openPalm(1)
+
+
+def do_open_both():
+    Seedha(lefth)
+    Seedha(righth)
+
+
+def do_preach():
+    Seedha(righth)
+    preachPalm(1)
+
+
+def do_bouquet():
+    holdBouquet()
+    shakeHandPalm(0)
+    shakeHandPalm(1)
+
+
+def do_self_point():
+    selfPoint()
+    thumbsUpPalm(0)
+    time.sleep(3)
+    setValsAll(lefth, 90, 40, 75, 180)
+
+
+def do_salute():
+    salute()
+    salutePalm(1)
+
+
+def do_jaadu_tona():
+    jaaduTona()
+    jaaduTonaPalm()
+
+
+def do_middle_finger():
+    Seedha(righth)
+    middleFingerPalm(1)
+
+
+def do_thumbs_up():
+    Saamne(righth)
+    thumbsUpPalm(1)
+
+
+def do_okay():
+    Seedha(righth)
+    okayPalm(1)
+
+
+def do_horns():
+    Seedha(righth)
+    hornsPalm(1)
+
+
+def do_mamamiah():
+    Seedha(righth)
+    mamamiahPalm(1)
+
+
+def do_open_both_palms():
+    Seedha(lefth)
+    openPalm(0)
+    time.sleep(1)
+    Seedha(righth)
+    openPalm(1)
+
+
+def do_close_both_palms():
+    Seedha(lefth)
+    closePalm(0)
+    time.sleep(1)
+    Seedha(righth)
+    closePalm(1)
+
+
+def do_cheese():
+    Seedha(righth)
+    cheesePalm(1)
+
+
+def do_take():
+    take()
+    shakeHandPalm(1)
+
+
+def do_count_one():
+    countIt()
+    oneCountPalm(1)
+
+
+def do_count_two():
+    countIt()
+    twoCountPalm(1)
+
+
+def do_count_three():
+    countIt()
+    threeCountPalm(1)
+
+
+def do_count_four():
+    countIt()
+    fourCountPalm(1)
+
+
+def do_count_five():
+    countIt()
+    openPalm(1)
+
+
+def do_magic_palm():
+    Seedha(righth)
+    jaaduTonaPalm()
+
+
+def do_call_me():
+    callMe()
+    callMePalm()
+
+
+def do_close_together():
+    Seedha(lefth)
+    closePalm(0)
+    Seedha(righth)
+    time.sleep(2)
+    closePalm(1)
+
+
+GESTURE_ACTIONS = {
+    "1": do_home_open,
+    "2": do_yawn_stretch,
+    "3": do_shake_hand,
+    "4": do_point_left,
+    "5": do_point_right,
+    "6": do_open_right,
+    "7": do_open_both,
+    "8": do_preach,
+    "9": do_bouquet,
+    "10": lambda: None,
+    "11": do_self_point,
+    "12": do_salute,
+    "13": do_jaadu_tona,
+    "14": do_middle_finger,
+    "15": do_thumbs_up,
+    "16": do_okay,
+    "17": do_horns,
+    "18": do_mamamiah,
+    "19": lambda: None,
+    "20": do_open_both_palms,
+    "21": do_close_both_palms,
+    "22": do_cheese,
+    "23": do_take,
+    "24": do_count_one,
+    "25": do_count_two,
+    "26": do_count_three,
+    "27": do_count_four,
+    "28": do_count_five,
+    "29": do_magic_palm,
+    "30": do_call_me,
+    "31": do_close_together,
+}
+
+
 def _safe_close():
     for board, label in ((lefth, "left"), (righth, "right")):
         if board is not None:
@@ -284,6 +479,18 @@ def _safe_close():
                 board.close()
             except Exception as exc:
                 _diag(f"Failed to close {label} arm Mega: {exc!s}")
+
+
+def execute_gesture(command: str) -> bool:
+    spec = resolve_gesture(command)
+    command_code = spec.code if spec is not None else command
+    action = GESTURE_ACTIONS.get(command_code)
+    if action is None:
+        _diag(f"Unknown arm gesture command: {command!r}")
+        return False
+
+    action()
+    return True
 
 
 def main() -> None:
@@ -355,142 +562,7 @@ def main() -> None:
 
             special = newRead == "6"
 
-            if newRead == "1":
-                homePos(lefth)
-                openPalm(0)
-                time.sleep(2)
-                homePos(righth)
-                openPalm(1)
-
-            elif newRead == "2":
-                YawnStretch()
-
-            elif newRead == "3":
-                shakeHand()
-                shakeHandPalm(1)
-
-            elif newRead == "4":
-                pointLeft()
-                pointPalm(0)
-
-            elif newRead == "5":
-                pointRight()
-                pointPalm(1)
-
-            elif newRead == "6":
-                Seedha(righth)
-                openPalm(1)
-                special = True
-
-            elif newRead == "7":
-                Seedha(lefth)
-                Seedha(righth)
-
-            elif newRead == "8":
-                Seedha(righth)
-                preachPalm(1)
-
-            elif newRead == "9":
-                holdBouquet()
-                shakeHandPalm(0)
-                shakeHandPalm(1)
-
-            elif newRead == "10":
-                pass
-
-            elif newRead == "11":
-                selfPoint()
-                thumbsUpPalm(0)
-                time.sleep(3)
-                setValsAll(lefth, 90, 40, 75, 180)
-
-            elif newRead == "12":
-                salute()
-                salutePalm(1)
-
-            elif newRead == "13":
-                jaaduTona()
-                jaaduTonaPalm()
-
-            elif newRead == "14":
-                Seedha(righth)
-                middleFingerPalm(1)
-
-            elif newRead == "15":
-                Saamne(righth)
-                thumbsUpPalm(1)
-
-            elif newRead == "16":
-                Seedha(righth)
-                okayPalm(1)
-
-            elif newRead == "17":
-                Seedha(righth)
-                hornsPalm(1)
-
-            elif newRead == "18":
-                Seedha(righth)
-                mamamiahPalm(1)
-
-            elif newRead == "19":
-                pass
-
-            elif newRead == "20":
-                Seedha(lefth)
-                openPalm(0)
-                time.sleep(1)
-                Seedha(righth)
-                openPalm(1)
-
-            elif newRead == "21":
-                Seedha(lefth)
-                closePalm(0)
-                time.sleep(1)
-                Seedha(righth)
-                closePalm(1)
-
-            elif newRead == "22":
-                Seedha(righth)
-                cheesePalm(1)
-
-            elif newRead == "23":
-                take()
-                shakeHandPalm(1)
-
-            elif newRead == "24":
-                countIt()
-                oneCountPalm(1)
-
-            elif newRead == "25":
-                countIt()
-                twoCountPalm(1)
-
-            elif newRead == "26":
-                countIt()
-                threeCountPalm(1)
-
-            elif newRead == "27":
-                countIt()
-                fourCountPalm(1)
-
-            elif newRead == "28":
-                countIt()
-                openPalm(1)
-
-            elif newRead == "29":
-                Seedha(righth)
-                jaaduTonaPalm()
-
-            elif newRead == "30":
-                callMe()
-                callMePalm()
-
-            elif newRead == "31":
-                Seedha(lefth)
-                closePalm(0)
-                Seedha(righth)
-                time.sleep(2)
-                closePalm(1)
+            execute_gesture(newRead)
 
             time.sleep(0.2)
     finally:

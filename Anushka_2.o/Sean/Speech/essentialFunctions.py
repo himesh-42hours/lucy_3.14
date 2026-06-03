@@ -20,6 +20,7 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
 
 import pyttsx3
 from playsound import playsound
+import pygame
 
 from anushka_runtime.config import CONTROL_FILES, TTS_ENGINE
 from anushka_runtime.ipc import append_message
@@ -54,6 +55,7 @@ _suppress_alsa_warnings()
 
 TTS_LOCK_PATH = Path(os.getenv("ANUSHKA_TTS_LOCK_PATH", str(Path(tempfile.gettempdir()) / "anushka_tts.lock")))
 tts_bridge = OpenAIRobotBridge()
+_pygame_tts_ready = False
 
 
 def _int_env(name: str, default: int) -> int:
@@ -199,6 +201,42 @@ def _speak_with_pyttsx3(sentence: str) -> bool:
         return False
 
 
+def _init_pygame_tts() -> bool:
+    global _pygame_tts_ready
+    if _pygame_tts_ready:
+        return True
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        _pygame_tts_ready = True
+        return True
+    except Exception:
+        return False
+
+
+def _play_audio_file(path: Path) -> bool:
+    if _init_pygame_tts():
+        try:
+            pygame.mixer.music.load(str(path))
+            pygame.mixer.music.play()
+            clock = pygame.time.Clock()
+            while pygame.mixer.music.get_busy():
+                clock.tick(30)
+            return True
+        except Exception:
+            try:
+                pygame.mixer.music.stop()
+            except Exception:
+                pass
+
+    try:
+        playsound(str(path))
+        return True
+    except Exception as exc:
+        sys.stderr.write(f"[speech] Local audio playback failed ({exc!s}).\n")
+        return False
+
+
 def _speak_with_openai(sentence: str) -> bool:
     if not (TTS_ENGINE == "openai" and tts_bridge.available):
         return False
@@ -206,8 +244,7 @@ def _speak_with_openai(sentence: str) -> bool:
         temp_path = Path(temp_audio.name)
     try:
         tts_bridge.speech_to_file(sentence, temp_path)
-        playsound(str(temp_path))
-        return True
+        return _play_audio_file(temp_path)
     except Exception as exc:
         sys.stderr.write(f"[speech] OpenAI TTS failed ({exc!s}); falling back.\n")
         return False

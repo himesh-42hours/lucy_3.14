@@ -37,6 +37,13 @@ try:
     from Speech.essentialFunctions import *
     from Hearing.essentialFunctions import *
     from runtime_helpers import *
+    from Vision.profile_store import (
+        UNKNOWN_GESTURE,
+        canonical_display_name,
+        ensure_profile,
+        gesture_for_name,
+        greeting_for_name,
+    )
     _vision_stage("vision: core helpers imported")
     import cv2
     from cvzone.HandTrackingModule import HandDetector
@@ -74,6 +81,7 @@ _vision_stage(f"vision: loading {len(myList)} known face image(s)")
 fw = 800
 fh = 600
 imgSize = 300
+classifier = None
 
 def allSame(lst):
     b = True
@@ -83,19 +91,52 @@ def allSame(lst):
     return True
 
 
-for cls in myList:
-    img= cv2.imread(f"{path}/{cls}")
-    images.append(img)
-    classNames.append(os.path.splitext(cls)[0])
+def write_current_person(name: str) -> None:
+    try:
+        with open(CURRENTLY_PRESENT_FILE, "w", encoding="utf-8") as peopleFile:
+            peopleFile.write(name or "none")
+    except Exception:
+        pass
 
-def findEncodings(images):
+
+def load_known_faces():
+    loaded_images = []
+    loaded_names = []
+    skipped = []
+
+    for cls in sorted(os.listdir(path)):
+        img = cv2.imread(f"{path}/{cls}")
+        if img is None:
+            skipped.append(cls)
+            continue
+        try:
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            encodings = face_recognition.face_encodings(img_rgb)
+            if not encodings:
+                skipped.append(cls)
+                continue
+        except Exception:
+            skipped.append(cls)
+            continue
+
+        loaded_images.append(img)
+        loaded_names.append(os.path.splitext(cls)[0])
+
+    if skipped:
+        _vision_stage(f"vision: skipped {len(skipped)} invalid face image(s)")
+    return loaded_images, loaded_names
+
+
+def findEncodings(loaded_images):
     encodeList= []
-    for img in images:
+    for img in loaded_images:
         img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         encode= face_recognition.face_encodings(img)[0]
         encodeList.append(encode)
     return encodeList
 
+
+images, classNames = load_known_faces()
 encodeListKnown= findEncodings(images)
 _vision_stage(f"vision: encoded {len(encodeListKnown)} known face(s)")
 print("Encoding Complete :)")
@@ -269,6 +310,7 @@ while True:
         if not bboxs:
             shouldCheck= True       #should check for new faces when there were no face last time
             shouldRotate= True
+            write_current_person("none")
 
         if len(bboxs) > 2 and shouldCheck:
             
@@ -288,7 +330,7 @@ while True:
 
             shouldCheck= False
 
-        elif bboxs and shouldCheck and int(bboxs[0]["score"][0]*100)>=94:
+        elif bboxs and int(bboxs[0]["score"][0]*100)>=94:
             """
             #? BBox structure
             bboxInfo - "id","bbox","score","center"
@@ -331,25 +373,15 @@ while True:
                 matchIndex= np.argmin(faceDis)
 
                 if matches[matchIndex] and faceDis[matchIndex] <= 0.48:
-                    nameToWrite= classNames[matchIndex]
-                    if "father" in str(nameToWrite).lower():
-                        nameToWrite= "Himesh Vijay"
-                    peopleFile= open(CURRENTLY_PRESENT_FILE, 'w')
-                    people= peopleFile.write(nameToWrite)
-                    peopleFile.close()
+                    nameToWrite= canonical_display_name(classNames[matchIndex])
+                    write_current_person(nameToWrite)
                 elif 0.48 < faceDis[matchIndex] <= 0.52:
-                    nameToWrite= classNames[matchIndex]
-                    if "father" in str(nameToWrite).lower():
-                        nameToWrite= "Himesh Vijay"
-                    peopleFile= open(CURRENTLY_PRESENT_FILE, 'w')
-                    people= peopleFile.write(f"someone like {nameToWrite}")
-                    peopleFile.close()
+                    nameToWrite= canonical_display_name(classNames[matchIndex])
+                    write_current_person(f"someone like {nameToWrite}")
                 else:
-                    peopleFile= open(CURRENTLY_PRESENT_FILE, 'w')
-                    people= peopleFile.write("none")
-                    peopleFile.close()
+                    write_current_person("none")
 
-                if matches[matchIndex]:
+                if shouldCheck and matches[matchIndex]:
                     name= classNames[matchIndex]
                     if name not in last5Faces:
                         if len(last5Faces)>=5:
@@ -364,7 +396,10 @@ while True:
                             if kkk=="1":
                                 break
                         hearCom.close()
-                        if name == "Father":
+                        lowered_name = name.lower().strip()
+                        display_name = canonical_display_name(name)
+
+                        if "father" in lowered_name or "himesh" in lowered_name:
                             todaysDate= datetime.datetime.now()
                             print("Entered inside")
 
@@ -396,12 +431,12 @@ while True:
                             moniWS.write("LastSeen- "+todaysDate.strftime("%d-%m-%Y"))
                             moniWS.close()
                         
-                        elif name.strip() in ["Dr_Manoj_Goyal"]: #Special known people
-                            writeToHaath("3")    #Shake hand gesture
-                            speak("Hello. Nice to meet you " + name)
+                        elif "manoj" in lowered_name: #Special known people
+                            writeToHaath(gesture_for_name(name, "3"))
+                            speak(greeting_for_name(name))
                         else:   #other known people
-                            writeToHaath("12")    ##Jai hind gesture
-                            speak("Jaye heend " + name)
+                            writeToHaath(gesture_for_name(name))
+                            speak(greeting_for_name(name))
 
                         #region Special Person
                         #todo Here
@@ -423,7 +458,7 @@ while True:
                         #endregion
                         
                         playHearing()
-                else:
+                elif shouldCheck:
                     if len(last15Embeddings) == 0:
                         pauseHearing()
                         hearCom= open(HEAR_COM_FILE, 'r')
@@ -434,7 +469,7 @@ while True:
                         hearCom.close()
                         last15Embeddings.append(muEncodings)
                         print("Nice to meet you new person")
-                        writeToHaath("6")   #Hello guesture
+                        writeToHaath(UNKNOWN_GESTURE)   #Hello guesture
                         speak("Hello. Nice to meet you.")
                         playHearing()
                         continue
@@ -453,10 +488,11 @@ while True:
                             if kkk=="1":
                                 break
                         hearCom.close()
-                        writeToHaath("6")   #Hello guesture
+                        writeToHaath(UNKNOWN_GESTURE)   #Hello guesture
                         speak("Hello. Nice to meet you.")
                         print("Nice to meet you new person")
                         playHearing()
+                shouldCheck= False
                     
                 #todo: Remove imshows
                 # cv2.imshow("Muh", mu)
@@ -559,19 +595,14 @@ while True:
             speak("Great. I will remember you as "+name)
             img_name = str(FACES_DIR / f"{name}.jpg")
             cv2.imwrite(img_name, newImg)
+            ensure_profile(name)
             print(f"{img_name} written!")
 
             speak("Re-encoding all known faces, just a second.")
             print("Encoding available faces...")
             
             try:
-                images= []
-                classNames= []
-                myList= os.listdir(path)
-                for cls in myList:
-                    Listimg= cv2.imread(f"{path}/{cls}")
-                    images.append(Listimg)
-                    classNames.append(os.path.splitext(cls)[0])
+                images, classNames = load_known_faces()
                 encodeListKnown= findEncodings(images)   
             except:
                 monitorWS= open(MONITOR_WS_FILE, 'a')
@@ -598,6 +629,12 @@ while True:
             cv2.destroyWindow("Headshot")
         except:
             pass
+
+        if classifier is None:
+            _vision_stage("vision: sign-language mode unavailable (classifier not configured)")
+            mode = 1
+            time.sleep(0.2)
+            continue
             
         lastThree = [0]
         hands, img = get_hand_detector().findHands(img, draw=False)

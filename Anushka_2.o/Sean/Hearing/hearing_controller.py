@@ -37,6 +37,7 @@ from anushka_runtime.device_discovery import microphone_selection
 from anushka_runtime.ipc import append_message, open_reader, read_available
 from anushka_runtime.openai_bridge import OpenAIRobotBridge, OpenAIUnavailableError
 from runtime_helpers import ListCheck, writeToEye, writeToHaath, writeToRolls
+from Arms.gesture_registry import find_gesture_for_query
 from OfflineChatbot import OfflineChatbot
 import offline_qa
 from Speech.essentialFunctions import speak, speakAndGest
@@ -321,9 +322,10 @@ def handle_quick_command(raw_query: str, normalized_query: str) -> bool:
         _shutdown_requested = True
         return True
 
-    if ListCheck(["give me your hand", "shake hand", "shake hands"], normalized_query):
-        writeToHaath("3")
-        reply = localized_reply(raw_query, "Sure. A gentle handshake is appreciated.")
+    gesture = find_gesture_for_query(normalized_query)
+    if gesture is not None:
+        writeToHaath(gesture.code)
+        reply = localized_reply(raw_query, gesture.reply)
         speakAndGest(reply)
         log_reply(reply)
         add_history(raw_query, reply)

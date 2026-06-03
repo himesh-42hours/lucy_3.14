@@ -34,6 +34,8 @@ CURRENTLY_PRESENT_FILE = SEAN_ROOT / "Vision" / "currentlyPresent.txt"
 
 FACE_DISTANCE_THRESHOLD = 0.48
 
+from Vision.profile_store import canonical_display_name, greeting_for_name
+
 
 def _diag(message: str) -> None:
     try:
@@ -48,15 +50,11 @@ def _greeting_for(name: str) -> str:
     if not name:
         return "Hello there. Nice to meet you."
 
-    lowered = name.lower()
-    if "father" in lowered or "himesh" in lowered:
-        return "Hello Himesh ji. Always a delight to see you."
-    if "manoj" in lowered:
-        return "Pruhnaum sir. Nice to meet you Doctor Manoj Goyal."
-    if "sachin" in lowered:
-        return "Hello sir. Nice to meet you Mr. Sachin Tyagi."
+    configured = greeting_for_name(name)
+    if configured:
+        return configured
 
-    pretty = name.replace("_", " ").strip()
+    pretty = canonical_display_name(name)
     hour = datetime.datetime.now().hour
     if 6 < hour < 12:
         return f"A very good morning, {pretty}. It is wonderful to see you."
