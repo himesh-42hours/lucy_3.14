@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 from contextlib import contextmanager
+import re
 import random
 import sys
 import time
@@ -25,7 +26,7 @@ import pygame
 from anushka_runtime.config import CONTROL_FILES, TTS_ENGINE
 from anushka_runtime.ipc import append_message
 from anushka_runtime.openai_bridge import OpenAIRobotBridge
-from runtime_helpers import ListCheck, retOutOf
+from runtime_helpers import ListCheck, retOutOf, writeToGardan
 
 
 def _suppress_alsa_warnings() -> None:
@@ -173,6 +174,16 @@ def writeToJaw(gesture: str) -> None:
     append_message(CONTROL_FILES["jaw"], gesture)
 
 
+def _apply_neck_gesture(sentence: str) -> None:
+    """Small, easy-to-edit nod/shake rules for spoken replies."""
+    lowered = f" {sentence.lower()} "
+    if re.search(r"\byes\b", lowered):
+        writeToGardan("YES")
+        return
+    if re.search(r"\b(no|not|never|cannot|can't|won't)\b", lowered):
+        writeToGardan("NO")
+
+
 def _speech_time_seconds(sentence: str) -> int:
     word_count = max(1, len(sentence.split()))
     return max(1, round(word_count / 2.4))
@@ -290,8 +301,6 @@ def _apply_contextual_gesture(sentence: str, speech_time: int) -> None:
         writeToHaath("30")
     elif ("jai hind" in lowered) or ("jay hind" in lowered):
         writeToHaath("19")
-    elif ListCheck([" i ", " me ", " myself "], lowered):
-        writeToHaath("11")
     elif ListCheck(["all the best", "best of luck"], lowered):
         writeToHaath("15")
     elif (" left " in lowered) and ("left out" not in lowered) and ("left over" not in lowered):
@@ -336,6 +345,7 @@ def speakAndGest(sentence: str) -> None:
     speech_time = _speech_time_seconds(sentence)
     writeToJaw(str(speech_time))
     _apply_contextual_gesture(sentence, speech_time)
+    _apply_neck_gesture(sentence)
     time.sleep(0.15)
     _speak_text(sentence)
 

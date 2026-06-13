@@ -64,6 +64,64 @@ def serial_port_from_env(name: str, default: Optional[str | int]) -> Optional[st
     return raw_value
 
 
+def _serial_port_candidates():
+    try:
+        from serial.tools import list_ports
+
+        return list(list_ports.comports())
+    except Exception:
+        return []
+
+
+def _serial_value_matches_port(value: str, port) -> bool:
+    needle = value.strip().lower()
+    if not needle:
+        return False
+
+    fields = [
+        getattr(port, "device", ""),
+        getattr(port, "description", ""),
+        getattr(port, "hwid", ""),
+        getattr(port, "manufacturer", ""),
+        getattr(port, "product", ""),
+        getattr(port, "serial_number", ""),
+        getattr(port, "location", ""),
+    ]
+    for field in fields:
+        text = str(field).strip().lower()
+        if not text:
+            continue
+        if needle == text or needle in text:
+            return True
+    return False
+
+
+def serial_port_from_id_env(name: str, default: Optional[str] = None) -> Optional[str]:
+    """Resolve a stable USB identifier to a concrete serial device path.
+
+    Accepts either a full device path (for example ``/dev/serial/by-id/...``),
+    a COM name, or a lookup token such as a serial number / description
+    fragment. The lookup token is matched against the current serial devices
+    reported by pyserial.
+    """
+    raw_value = os.getenv(name)
+    if raw_value is None or raw_value.strip() == "":
+        raw_value = "" if default is None else default
+    raw_value = raw_value.strip()
+    if raw_value == "":
+        return None
+    if raw_value.isdigit():
+        return f"COM{raw_value}"
+    if raw_value.startswith("/") or raw_value.upper().startswith("COM"):
+        return raw_value
+
+    for port in _serial_port_candidates():
+        if _serial_value_matches_port(raw_value, port):
+            return port.device
+
+    return None
+
+
 def path_for(*parts: str) -> Path:
     return REPO_ROOT.joinpath(*parts)
 
@@ -113,15 +171,11 @@ def module_script(name: str) -> Path:
     scripts = {
         "heartbeat": path_for("Sean", "Heartbeat", "heartbeat_controller.py"),
         "monitor": path_for("Sean", "Monitor", "monitor_controller.py"),
-        "speech": path_for("Sean", "Speech", "masterSpeech.py"),
-        "jaw": path_for("Sean", "Jaw", "jaw_controller.py"),
         "haath": path_for("Sean", "Arms", "arms_controller.py"),
         "rolls": path_for("Sean", "DriveBase", "drive_base_controller.py"),
-        "eye": path_for("Sean", "Eye", "eye_controller.py"),
+        "auxmega": path_for("Sean", "AuxMega", "auxmega_controller.py"),
         "hear": path_for("Sean", "Hearing", "hearing_controller.py"),
         "vision": path_for("Sean", "Vision", "vision_controller.py"),
-        "gardan": path_for("Neck", "neck_controller.py"),
-        "auxmega": path_for("Sean", "AuxMega", "auxmega_controller.py"),
     }
     return scripts[name]
 
@@ -169,15 +223,36 @@ ENABLE_EARLY_GREETING = _bool_env("ANUSHKA_ENABLE_EARLY_GREETING", False)
 
 MONITOR_URL = os.getenv("ANUSHKA_MONITOR_URL", "http://10.21.69.5:3000").rstrip("/")
 
-LEFT_ARM_MEGA_PORT = serial_port_from_env("ANUSHKA_LEFT_ARM_MEGA_PORT", os.getenv("ANUSHKA_LEFT_HAND_PORT", ""))
-RIGHT_ARM_MEGA_PORT = serial_port_from_env("ANUSHKA_RIGHT_ARM_MEGA_PORT", os.getenv("ANUSHKA_RIGHT_HAND_PORT", ""))
-AUX_MEGA_PORT = serial_port_from_env("ANUSHKA_AUX_MEGA_PORT", None)
+LEFT_ARM_MEGA_PORT = (
+    serial_port_from_id_env("ANUSHKA_LEFT_ARM_MEGA_ID")
+    or serial_port_from_env("ANUSHKA_LEFT_ARM_MEGA_PORT", os.getenv("ANUSHKA_LEFT_HAND_PORT", ""))
+)
+RIGHT_ARM_MEGA_PORT = (
+    serial_port_from_id_env("ANUSHKA_RIGHT_ARM_MEGA_ID")
+    or serial_port_from_env("ANUSHKA_RIGHT_ARM_MEGA_PORT", os.getenv("ANUSHKA_RIGHT_HAND_PORT", ""))
+)
+
+# The first Mega handles the head: neck, jaw, eyes, eyelids.
+# `ANUSHKA_AUX_MEGA_PORT` is kept as a legacy alias so older .env files still work.
+HEAD_MEGA_PORT = (
+    serial_port_from_id_env("ANUSHKA_HEAD_MEGA_ID")
+    or serial_port_from_env("ANUSHKA_HEAD_MEGA_PORT", os.getenv("ANUSHKA_AUX_MEGA_PORT", ""))
+)
+
+# The fourth Mega handles the mobile base.
+BASE_MEGA_PORT = (
+    serial_port_from_id_env("ANUSHKA_BASE_MEGA_ID")
+    or serial_port_from_env("ANUSHKA_BASE_MEGA_PORT", os.getenv("ANUSHKA_ROLLS_PORT", ""))
+)
+
+# Legacy alias kept for older modules and docs.
+AUX_MEGA_PORT = HEAD_MEGA_PORT
 
 # Legacy aliases kept for compatibility with older modules.
 LEFT_HAND_PORT = LEFT_ARM_MEGA_PORT
 RIGHT_HAND_PORT = RIGHT_ARM_MEGA_PORT
 PALM_PORT = None
-EYE_PORT = AUX_MEGA_PORT
-JAW_PORT = AUX_MEGA_PORT
-ROLLS_PORT = AUX_MEGA_PORT
-GARDAN_PORT = AUX_MEGA_PORT
+EYE_PORT = HEAD_MEGA_PORT
+JAW_PORT = HEAD_MEGA_PORT
+ROLLS_PORT = BASE_MEGA_PORT
+GARDAN_PORT = HEAD_MEGA_PORT

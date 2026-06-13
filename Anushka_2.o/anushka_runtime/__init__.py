@@ -22,8 +22,11 @@ from .config import (
     TTS_VOICE,
     LEFT_ARM_MEGA_PORT,
     RIGHT_ARM_MEGA_PORT,
+    HEAD_MEGA_PORT,
+    BASE_MEGA_PORT,
     module_script,
     path_for,
+    serial_port_from_id_env,
     serial_port_from_env,
 )
 from .ipc import (

@@ -177,6 +177,7 @@ myFaceDetector = None
 visionWS= open(VISION_WS_FILE, 'r')
 lastRead= visionWS.read()
 lastFace= "Hi"
+write_current_person("none")
 
 mode= 0
 

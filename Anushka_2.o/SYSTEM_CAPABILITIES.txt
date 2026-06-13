@@ -1,0 +1,139 @@
+Anushka_2.o System Capabilities
+
+This file lists the main things the current robot system can do.
+It is organized from base to head, then speech, hearing, vision, and support modules.
+
+1. Base / Drive System
+- Move forward.
+- Move backward.
+- Turn left.
+- Turn right.
+- Stop movement.
+- Move for a timed duration.
+- Accept direct base commands through the drive base controller.
+- Accept direction commands from hearing when the user asks the robot to move.
+- Follow a person in follow-me mode using vision input.
+- Adjust motion based on person position in the camera frame.
+- Use the Cytron motor driver on the base Mega.
+
+2. Left Arm
+- Move the left shoulder rotation.
+- Lift the left arm using the paired shoulder lift servos.
+- Lift the left elbow using the paired elbow lift servos.
+- Rotate the left wrist.
+- Open and close the left hand fingers.
+- Perform left-hand poses and gestures through the gesture registry.
+- Return to home position.
+- Perform open, close, and relaxed hand poses.
+
+3. Right Arm
+- Move the right shoulder rotation.
+- Lift the right arm using the paired shoulder lift servos.
+- Lift the right elbow using the paired elbow lift servos.
+- Rotate the right wrist.
+- Open and close the right hand fingers.
+- Perform right-hand poses and gestures through the gesture registry.
+- Return to home position.
+- Perform salute, wave-style, pointing, thumbs up, okay sign, call me, and other finger poses.
+
+4. Head / Neck / Eyes / Jaw
+- Move the neck left and right.
+- Nod yes.
+- Shake no.
+- Set a direct neck angle.
+- Move the jaw while talking.
+- Open and close the jaw directly.
+- Blink the eyelids.
+- Move the eyes up, down, and center.
+- Animate jaw, eyes, and blinking while speaking.
+- Keep the head alive during speech with talk mode behavior.
+
+5. Speech Output
+- Speak text using the configured TTS backend.
+- Speak offline with pyttsx3.
+- Speak with OpenAI TTS when configured.
+- Choose male or female voice mode in software.
+- Speak and trigger gestures at the same time.
+- Adjust jaw timing automatically based on sentence length.
+- Trigger small gesture responses from speech text.
+- Trigger neck yes/no reactions from speech text.
+
+6. Hearing / Command Understanding
+- Listen continuously when hearing mode is active.
+- Transcribe the microphone input.
+- Understand direct wake words like "Anushka".
+- Understand shutdown commands.
+- Understand speech requests for gestures.
+- Understand movement commands like forward, back, left, and right.
+- Understand follow-me and stop-follow commands.
+- Understand remember-me / remember-him / remember-her commands.
+- Answer time, date, weather, and some canned queries.
+- Play audio reactions like chuckle, whistle, and yawn.
+- Route recognized gesture phrases to the arm system.
+- Fall back to offline chatbot logic when OpenAI is unavailable.
+
+7. Gesture Library
+- Salute.
+- Raise one hand.
+- Raise both hands.
+- Shake hand.
+- Point left.
+- Point right.
+- Thumbs up.
+- Okay sign.
+- Open both arms.
+- Close both arms.
+- Call me sign.
+- Self-point gesture.
+- Any future gesture can be added in the registry and arm controller.
+
+8. Vision / Face Recognition
+- Load known faces from the faces database.
+- Recognize known people from the camera.
+- Update the currently present person file.
+- Update the last seen file for tracked people.
+- Greet known people.
+- Greet unknown people.
+- Trigger a greeting before hearing starts when configured.
+- Enter recognition mode.
+- Enter headshot / remember mode.
+- Re-encode faces after adding a new person.
+- Enter follow-me mode.
+- Send drive commands based on body position.
+- Enter sign-language mode if a classifier is configured.
+- Track faces and keep a short face history.
+- Trigger arm gestures during greetings.
+
+9. Monitor / Logging
+- Write logs to the monitor file.
+- Write error messages to the monitor file.
+- Record start time and stop time.
+- Upload or forward logs through the monitor utility scripts.
+- Keep runtime status files updated for each module.
+
+10. Heartbeat
+- Run the heartbeat module.
+- Provide a periodic background presence signal.
+- Mark the heartbeat module as ready and stopped in its status file.
+
+11. Orchestration
+- Start all configured runtime modules.
+- Stop modules cleanly on shutdown.
+- Recover from some module failures.
+- Support simulation mode when serial ports are missing.
+- Read and write file-based IPC messages.
+- Keep the robot runtime modular.
+
+12. Legacy / Optional Features
+- Train persona logs.
+- Update knowledge base files.
+- Use the legacy brain console.
+- Send monitor data with older text sender utilities.
+- Upload monitor logs with the older file uploader utility.
+- Use older standalone gesture helper scripts.
+- Use older standalone eye, jaw, and neck controller scripts if manually launched in an old setup.
+
+13. Notes
+- Some files in the repository are legacy helpers and are not launched by the current orchestrator.
+- Some vision TODO comments are development notes and do not block the current runtime.
+- The live runtime mainly uses file IPC plus the active controllers launched by the boss orchestrator.

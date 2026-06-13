@@ -14,17 +14,27 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
 
 import serial
 
-from anushka_runtime.config import CONTROL_FILES, ROLLS_PORT, STATUS_FILES
+from anushka_runtime.config import BASE_MEGA_PORT, CONTROL_FILES, STATUS_FILES
 from anushka_runtime.ipc import append_message, open_reader, read_available
 
 
+DEFAULT_BASE_SPEED = 140
+
+
+def _parse_seconds(value: str) -> float | None:
+    try:
+        return float(value)
+    except ValueError:
+        return None
+
+
 def main() -> None:
-    rolls = None
-    if ROLLS_PORT:
+    base = None
+    if BASE_MEGA_PORT:
         try:
-            rolls = serial.Serial(ROLLS_PORT, baudrate=9600, timeout=2)
+            base = serial.Serial(BASE_MEGA_PORT, baudrate=9600, timeout=2)
         except Exception:
-            append_message(STATUS_FILES["rolls"], f"Rolls serial port {ROLLS_PORT} is unavailable. Running in simulation mode.")
+            append_message(STATUS_FILES["rolls"], f"Base serial port {BASE_MEGA_PORT} is unavailable. Running in simulation mode.")
 
     append_message(STATUS_FILES["rolls"], "1")
     reader = open_reader(CONTROL_FILES["rolls"])
@@ -36,15 +46,33 @@ def main() -> None:
                 continue
             if command == "-1":
                 break
-            if rolls:
+
+            cmd = command.strip()
+            upper = cmd.upper()
+
+            if upper.startswith("BASE:") or upper.startswith("GESTURE:") or upper == "STOP":
+                payload = upper
+            else:
+                if "@" not in cmd:
+                    continue
+                direction = cmd[0].upper()
+                seconds = _parse_seconds(cmd.split("@", 1)[1])
+                if seconds is None:
+                    continue
+                if direction not in {"F", "B", "L", "R"}:
+                    continue
+                duration_ms = max(0, int(seconds * 1000))
+                payload = f"BASE:{direction},{DEFAULT_BASE_SPEED},{duration_ms}"
+
+            if base:
                 try:
-                    rolls.write(command.encode("utf-8"))
+                    base.write(f"{payload}\n".encode("utf-8"))
                 except Exception:
                     append_message(STATUS_FILES["rolls"], "Moving base lost serial connectivity and is continuing in simulation mode.")
-                    rolls = None
+                    base = None
     finally:
-        if rolls:
-            rolls.close()
+        if base:
+            base.close()
         reader.close()
 
 

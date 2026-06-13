@@ -18,12 +18,13 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
         sys.path.insert(0, entry)
 
 from anushka_runtime.config import (
-    AUX_MEGA_PORT,
+    BASE_MEGA_PORT,
     CAMERA_SOURCE,
     CONTROL_FILES,
     ENABLE_EARLY_GREETING,
     ENABLE_MONITORING,
     ENABLE_VISION,
+    HEAD_MEGA_PORT,
     LEFT_ARM_MEGA_PORT,
     OPENAI_API_KEY,
     RIGHT_ARM_MEGA_PORT,
@@ -63,6 +64,7 @@ MODULE_SEQUENCE: list[ModuleSpec] = [
     ModuleSpec("heartbeat", "heartbeat", "heartbeat", optional=True, startup_timeout=10.0),
     ModuleSpec("monitor", "monitor", "monitor", optional=True, startup_timeout=10.0),
     ModuleSpec("auxmega", "auxmega", "auxmega"),
+    ModuleSpec("rolls", "rolls", "rolls"),
     ModuleSpec("haath", "haath", "haath"),
 ]
 
@@ -111,7 +113,7 @@ def launch_module(spec: ModuleSpec) -> subprocess.Popen[str]:
 
 
 def shutdown_modules(processes: dict[str, subprocess.Popen[str]]) -> None:
-    shutdown_order = ["vision", "hear", "haath", "auxmega", "monitor", "heartbeat"]
+    shutdown_order = ["vision", "hear", "haath", "rolls", "auxmega", "monitor", "heartbeat"]
     wait_timeouts = {
         "hear": 20,
     }
@@ -184,10 +186,11 @@ def _print_startup_summary() -> None:
     _console(f"TTS engine: {TTS_ENGINE}")
     _console(f"Vision enabled: {ENABLE_VISION}, Monitoring enabled: {ENABLE_MONITORING}")
     _console(
-        "Serial ports — left arm: {l}, right arm: {r}, aux: {a}".format(
+        "Serial ports — left arm: {l}, right arm: {r}, head: {h}, base: {b}".format(
             l=LEFT_ARM_MEGA_PORT or "(sim)",
             r=RIGHT_ARM_MEGA_PORT or "(sim)",
-            a=AUX_MEGA_PORT or "(sim)",
+            h=HEAD_MEGA_PORT or "(sim)",
+            b=BASE_MEGA_PORT or "(sim)",
         )
     )
     if SMOKE_TEST:
@@ -276,7 +279,7 @@ def main() -> None:
                         message = f"{name} stopped unexpectedly."
                         monitor_error(message)
                         _console(message)
-                        if name in {"hear", "haath", "auxmega"}:
+                        if name in {"hear", "haath", "auxmega", "rolls"}:
                             failure_message = message
                             break
                 if failure_message:

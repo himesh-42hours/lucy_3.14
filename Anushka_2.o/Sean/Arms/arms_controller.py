@@ -79,6 +79,14 @@ lefth = _open_arm(LEFT_ARM_MEGA_PORT, "left")
 righth = _open_arm(RIGHT_ARM_MEGA_PORT, "right")
 
 
+def return_to_home_pose() -> None:
+    """Return both arms to a neutral resting pose after any gesture."""
+    homePos(lefth)
+    homePalm(0)
+    homePos(righth)
+    homePalm(1)
+
+
 def setValsAll(ardObj, a1, a2, a3, a4, slow=False):
     command = f"ARM:{a1},{a2},{a3},{a4}"
 
@@ -179,11 +187,15 @@ def cheesePalm(hand):
 
 
 def jaaduTonaPalm():
-    send_line(
-        righth,
-        "SPECIAL:JAADUTONA",
-        "Finger control on the right arm Mega was interrupted recently. Please reattach it.",
-    )
+    if righth is None:
+        return
+    spell_a = (170, 90, 55, 55, 55)
+    spell_b = (120, 40, 130, 40, 130)
+    setAllFingers(1, *spell_a)
+    time.sleep(0.25)
+    setAllFingers(1, *spell_b)
+    time.sleep(0.25)
+    setAllFingers(1, *spell_a)
 
 
 def callMePalm():
@@ -191,7 +203,7 @@ def callMePalm():
 
 
 def homePos(ard):
-    setValsAll(ard, 90, 90, 90, 90)
+    setValsAll(ard, 0, 90, 90, 90)
 
 
 def shakeHand():
@@ -246,7 +258,7 @@ def Seedha(ard):
 
 
 def salute():
-    setValsAll(righth, 180, 0, 40, 180, slow=True)
+    setValsAll(righth, 150, 80, 40, 60, slow=True)
 
 
 def DownLeft():
@@ -437,6 +449,8 @@ def do_close_together():
     closePalm(1)
 
 
+# Add new hand poses here when you expand the gesture library.
+# Keep the numeric keys aligned with `Arms/gesture_registry.py`.
 GESTURE_ACTIONS = {
     "1": do_home_open,
     "2": do_yawn_stretch,
@@ -489,7 +503,12 @@ def execute_gesture(command: str) -> bool:
         _diag(f"Unknown arm gesture command: {command!r}")
         return False
 
-    action()
+    try:
+        action()
+    finally:
+        # Keep future gestures consistent: every completed gesture relaxes
+        # back to the neutral pose unless the action itself already failed.
+        return_to_home_pose()
     return True
 
 
@@ -498,21 +517,12 @@ def main() -> None:
     signal.signal(signal.SIGTERM, _on_signal)
 
     haathWS = open_reader(CONTROL_FILES["haath"])
-
-    HANDS_UPLIFT_TIME = 6
-
-    # Bring the hands to a known starting pose. In simulation mode these are no-ops.
-    DownLeft()
-    homePalm(0)
-    DownRight()
-    time.sleep(1)
-    homePalm(1)
+    try:
+        haathWS.seek(0, 2)
+    except Exception:
+        pass
 
     append_message(STATUS_FILES["haath"], "1")
-
-    chaalu = False
-    special = False
-    prevTime = time.time()
 
     try:
         while True:
@@ -520,47 +530,13 @@ def main() -> None:
                 break
 
             newRead = read_available(haathWS)
-            newTime = time.time()
-
-            if chaalu:
-                time.sleep(1)
-                if newTime - prevTime >= HANDS_UPLIFT_TIME:
-                    if special:
-                        DownLeft()
-                        closePalm(0)
-                        time.sleep(0.4)
-                        DownRight()
-                        closePalm(1)
-                        time.sleep(3)
-                        homePalm(0)
-                        time.sleep(1)
-                        homePalm(1)
-                        chaalu = False
-                        time.sleep(3)
-                        special = False
-                    else:
-                        DownLeft()
-                        homePalm(0)
-                        DownRight()
-                        time.sleep(1)
-                        homePalm(1)
-                        chaalu = False
-                        time.sleep(3)
-                continue
 
             if not newRead:
                 time.sleep(0.05)
                 continue
 
-            prevTime = newTime
-            chaalu = True
-
             if newRead == "-1":
-                DownLeft()
-                DownRight()
                 break
-
-            special = newRead == "6"
 
             execute_gesture(newRead)
 

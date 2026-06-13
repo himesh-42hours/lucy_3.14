@@ -1,240 +1,278 @@
-#include <CytronMotorDriver.h>
 #include <Servo.h>
 
 /*
-  Shared auxiliary Mega for:
+  Head Mega (4 servos):
+  - neck rotation
   - jaw
-  - eye mechanism
-  - neck
-  - wheel base
+  - eyes up/down
+  - eyelids up/down
 
-  Python sends line-based commands in these formats:
+  Serial commands:
+    TALK:1 / TALK:0
+    NOD:YES / NOD:NO
+    NECK:<0-180>
+    EYES:UP / EYES:DOWN / EYES:CENTER
+    BLINK
+    JAW:OPEN / JAW:CLOSE
 
-  J:<seconds>
-  E:<gesture_id>
-  N:<angle>
-  R:<direction@seconds>
-
-  Update the pin constants below to match your actual wiring.
+  Update pin and angle constants to match your hardware.
 */
 
-const int JAW_PIN = 34;
-const int NECK_PIN = 35;
-const int TOP_LEFT_EYELID_PIN = 22;
-const int BOTTOM_LEFT_EYELID_PIN = 24;
-const int TOP_RIGHT_EYELID_PIN = 26;
-const int BOTTOM_RIGHT_EYELID_PIN = 28;
-const int EYE_Y_PIN = 32;
-const int EYE_X_PIN = 30;
+const uint8_t PIN_NECK = 35;
+const uint8_t PIN_JAW = 34;
+const uint8_t PIN_EYE_Y = 32;
+const uint8_t PIN_EYELID = 22;
 
-const int JAW_LOWER_LIMIT = 65;
-const int JAW_UPPER_LIMIT = 100;
-const int JAW_DELAY_MS = 180;
+const int NECK_CENTER = 90;
+const int NECK_MIN = 60;
+const int NECK_MAX = 120;
 
-CytronMD leftMotor(PWM_DIR, 3, 4);
-CytronMD rightMotor(PWM_DIR, 6, 7);
+const int JAW_CLOSED = 90;
+const int JAW_OPEN = 120;
+const uint16_t JAW_PERIOD_MS = 180;
 
-Servo jawServo;
+const int EYE_CENTER = 90;
+const int EYE_UP = 60;
+const int EYE_DOWN = 120;
+
+const int EYELID_OPEN = 90;
+const int EYELID_CLOSED = 140;
+
+const uint16_t BLINK_CLOSE_MS = 160;
+const uint16_t BLINK_INTERVAL_IDLE_MS = 6000;
+const uint16_t BLINK_INTERVAL_TALK_MS = 3200;
+
+const uint16_t SACCADE_INTERVAL_MS = 900;
+const uint16_t NECK_STEP_DELAY_MS = 140;
+
 Servo neckServo;
-Servo topLeftEyelid;
-Servo bottomLeftEyelid;
-Servo topRightEyelid;
-Servo bottomRightEyelid;
-Servo eyeY;
-Servo eyeX;
+Servo jawServo;
+Servo eyeServo;
+Servo eyelidServo;
 
 String incoming;
-int currentNeck = 90;
-bool shouldBlink = true;
-unsigned long lastBlinkAt = 0;
 
-void closeEye() {
-  topLeftEyelid.write(145);
-  bottomLeftEyelid.write(40);
-  topRightEyelid.write(35);
-  bottomRightEyelid.write(140);
+bool talkActive = false;
+bool jawIsOpen = false;
+
+unsigned long jawNextAt = 0;
+unsigned long blinkNextAt = 0;
+unsigned long blinkPhaseAt = 0;
+bool blinkInProgress = false;
+
+unsigned long saccadeNextAt = 0;
+uint8_t saccadeStep = 0;
+
+int neckCurrent = NECK_CENTER;
+int neckSeq[8];
+uint8_t neckSeqLen = 0;
+uint8_t neckSeqIndex = 0;
+unsigned long neckNextAt = 0;
+bool neckSeqActive = false;
+
+void setNeck(int angle) {
+  angle = constrain(angle, NECK_MIN, NECK_MAX);
+  neckCurrent = angle;
+  neckServo.write(angle);
 }
 
-void openEye() {
-  topLeftEyelid.write(95);
-  bottomLeftEyelid.write(90);
-  topRightEyelid.write(85);
-  bottomRightEyelid.write(90);
+void setJaw(bool open) {
+  jawIsOpen = open;
+  jawServo.write(open ? JAW_OPEN : JAW_CLOSED);
 }
 
-void eyeCenter() {
-  eyeX.write(90);
-  eyeY.write(90);
+void setEyesCenter() {
+  eyeServo.write(EYE_CENTER);
 }
 
-void eyeLeft() {
-  eyeX.write(30);
+void setEyesUp() {
+  eyeServo.write(EYE_UP);
 }
 
-void eyeRight() {
-  eyeX.write(140);
+void setEyesDown() {
+  eyeServo.write(EYE_DOWN);
 }
 
-void lookUp() {
-  eyeY.write(50);
+void openEyelids() {
+  eyelidServo.write(EYELID_OPEN);
 }
 
-void lookDown() {
-  eyeY.write(130);
+void closeEyelids() {
+  eyelidServo.write(EYELID_CLOSED);
 }
 
-void startupEyeMotion() {
-  eyeX.write(60);
-  delay(280);
-  eyeY.write(80);
-  delay(280);
-  eyeX.write(120);
-  delay(280);
-  eyeY.write(140);
-  delay(280);
-  eyeCenter();
-  delay(250);
-  closeEye();
-  delay(360);
-  openEye();
+void startBlink(unsigned long now) {
+  blinkInProgress = true;
+  blinkPhaseAt = now;
+  closeEyelids();
 }
 
-void moveNeck(int target) {
-  target = constrain(target, 70, 140);
-  while (currentNeck != target) {
-    if (currentNeck < target) {
-      currentNeck++;
-    } else {
-      currentNeck--;
+void updateBlink(unsigned long now) {
+  if (blinkInProgress) {
+    if (now - blinkPhaseAt >= BLINK_CLOSE_MS) {
+      openEyelids();
+      blinkInProgress = false;
+      blinkNextAt = now + (talkActive ? BLINK_INTERVAL_TALK_MS : BLINK_INTERVAL_IDLE_MS);
     }
-    neckServo.write(currentNeck);
-    delay(10);
-  }
-}
-
-void runJawForSeconds(int secondsToRun) {
-  unsigned long startAt = millis();
-  while ((millis() - startAt) < (unsigned long) secondsToRun * 1000UL) {
-    jawServo.write(JAW_LOWER_LIMIT);
-    delay(JAW_DELAY_MS);
-    jawServo.write(JAW_UPPER_LIMIT);
-    delay(JAW_DELAY_MS);
-  }
-}
-
-void runEyeGesture(int gesture) {
-  if (gesture == 0) {
-    startupEyeMotion();
-    shouldBlink = false;
-  } else if (gesture == 1) {
-    eyeLeft();
-    shouldBlink = true;
-  } else if (gesture == 2) {
-    eyeRight();
-    shouldBlink = true;
-  } else if (gesture == 3) {
-    eyeCenter();
-    shouldBlink = true;
-  } else if (gesture == 4) {
-    lookUp();
-    shouldBlink = true;
-  } else if (gesture == 5) {
-    lookDown();
-    shouldBlink = true;
-  } else if (gesture == 6) {
-    closeEye();
-    shouldBlink = false;
-  } else if (gesture == 7) {
-    openEye();
-    shouldBlink = false;
-  } else if (gesture == 8) {
-    closeEye();
-    delay(800);
-    eyeCenter();
-    openEye();
-    shouldBlink = false;
-  } else if (gesture == -2) {
-    eyeCenter();
-    openEye();
-    shouldBlink = true;
-  }
-  lastBlinkAt = millis();
-}
-
-void stopBase() {
-  leftMotor.setSpeed(0);
-  rightMotor.setSpeed(0);
-}
-
-void runBaseCommand(String payload) {
-  char direction = payload.charAt(0);
-  int sep = payload.indexOf('@');
-  if (sep < 0) {
     return;
   }
-  float secondsToRun = payload.substring(sep + 1).toFloat();
-  int speed = 60;
 
-  if (direction == 'f') {
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
-  } else if (direction == 'b') {
-    leftMotor.setSpeed(-speed);
-    rightMotor.setSpeed(-speed);
-  } else if (direction == 'l') {
-    leftMotor.setSpeed(-speed);
-    rightMotor.setSpeed(speed);
-  } else if (direction == 'r') {
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(-speed);
+  if (now >= blinkNextAt) {
+    startBlink(now);
+  }
+}
+
+void updateTalk(unsigned long now) {
+  if (!talkActive) return;
+
+  if (now >= jawNextAt) {
+    setJaw(!jawIsOpen);
+    jawNextAt = now + JAW_PERIOD_MS;
+  }
+
+  if (now >= saccadeNextAt) {
+    switch (saccadeStep % 3) {
+      case 0: setEyesCenter(); break;
+      case 1: setEyesUp(); break;
+      default: setEyesDown(); break;
+    }
+    saccadeStep++;
+    saccadeNextAt = now + SACCADE_INTERVAL_MS;
+  }
+}
+
+void startTalk(bool enable) {
+  talkActive = enable;
+  if (enable) {
+    jawNextAt = millis();
+    saccadeNextAt = millis() + 200;
+    blinkNextAt = millis() + BLINK_INTERVAL_TALK_MS;
   } else {
-    stopBase();
+    setJaw(false);
+    setEyesCenter();
+    blinkNextAt = millis() + BLINK_INTERVAL_IDLE_MS;
+  }
+}
+
+void startNeckYes() {
+  neckSeqLen = 5;
+  neckSeq[0] = NECK_CENTER;
+  neckSeq[1] = constrain(NECK_CENTER - 8, NECK_MIN, NECK_MAX);
+  neckSeq[2] = NECK_CENTER;
+  neckSeq[3] = constrain(NECK_CENTER - 8, NECK_MIN, NECK_MAX);
+  neckSeq[4] = NECK_CENTER;
+  neckSeqIndex = 0;
+  neckSeqActive = true;
+  neckNextAt = millis();
+}
+
+void startNeckNo() {
+  neckSeqLen = 5;
+  neckSeq[0] = constrain(NECK_CENTER - 18, NECK_MIN, NECK_MAX);
+  neckSeq[1] = constrain(NECK_CENTER + 18, NECK_MIN, NECK_MAX);
+  neckSeq[2] = constrain(NECK_CENTER - 18, NECK_MIN, NECK_MAX);
+  neckSeq[3] = NECK_CENTER;
+  neckSeq[4] = NECK_CENTER;
+  neckSeqIndex = 0;
+  neckSeqActive = true;
+  neckNextAt = millis();
+}
+
+void updateNeckSequence(unsigned long now) {
+  if (!neckSeqActive) return;
+  if (now < neckNextAt) return;
+
+  setNeck(neckSeq[neckSeqIndex]);
+  neckSeqIndex++;
+  if (neckSeqIndex >= neckSeqLen) {
+    neckSeqActive = false;
+  } else {
+    neckNextAt = now + NECK_STEP_DELAY_MS;
+  }
+}
+
+void handleEyesCommand(String payload) {
+  payload.trim();
+  if (payload == "UP") {
+    setEyesUp();
+  } else if (payload == "DOWN") {
+    setEyesDown();
+  } else {
+    setEyesCenter();
+  }
+}
+
+void handleJawCommand(String payload) {
+  payload.trim();
+  if (payload == "OPEN") {
+    talkActive = false;
+    setJaw(true);
+  } else if (payload == "CLOSE") {
+    talkActive = false;
+    setJaw(false);
+  }
+}
+
+void handleCommand(String cmd) {
+  if (cmd.startsWith("TALK:")) {
+    startTalk(cmd.substring(5).toInt() > 0);
     return;
   }
-
-  delay((int) (secondsToRun * 1000.0f));
-  stopBase();
+  if (cmd.startsWith("NOD:")) {
+    String payload = cmd.substring(4);
+    payload.trim();
+    if (payload == "YES") {
+      startNeckYes();
+    } else if (payload == "NO") {
+      startNeckNo();
+    }
+    return;
+  }
+  if (cmd.startsWith("NECK:")) {
+    setNeck(cmd.substring(5).toInt());
+    return;
+  }
+  if (cmd.startsWith("EYES:")) {
+    handleEyesCommand(cmd.substring(5));
+    return;
+  }
+  if (cmd == "BLINK") {
+    startBlink(millis());
+    return;
+  }
+  if (cmd.startsWith("JAW:")) {
+    handleJawCommand(cmd.substring(4));
+    return;
+  }
 }
 
 void setup() {
   Serial.begin(9600);
 
-  jawServo.attach(JAW_PIN);
-  neckServo.attach(NECK_PIN);
-  topLeftEyelid.attach(TOP_LEFT_EYELID_PIN);
-  bottomLeftEyelid.attach(BOTTOM_LEFT_EYELID_PIN);
-  topRightEyelid.attach(TOP_RIGHT_EYELID_PIN);
-  bottomRightEyelid.attach(BOTTOM_RIGHT_EYELID_PIN);
-  eyeY.attach(EYE_Y_PIN);
-  eyeX.attach(EYE_X_PIN);
+  neckServo.attach(PIN_NECK);
+  jawServo.attach(PIN_JAW);
+  eyeServo.attach(PIN_EYE_Y);
+  eyelidServo.attach(PIN_EYELID);
 
-  jawServo.write(JAW_UPPER_LIMIT);
-  neckServo.write(currentNeck);
-  openEye();
-  eyeCenter();
-  lastBlinkAt = millis();
+  setNeck(NECK_CENTER);
+  setJaw(false);
+  setEyesCenter();
+  openEyelids();
+
+  blinkNextAt = millis() + BLINK_INTERVAL_IDLE_MS;
 }
 
 void loop() {
   if (Serial.available() > 0) {
     incoming = Serial.readStringUntil('\n');
     incoming.trim();
-
-    if (incoming.startsWith("J:")) {
-      runJawForSeconds(incoming.substring(2).toInt());
-    } else if (incoming.startsWith("E:")) {
-      runEyeGesture(incoming.substring(2).toInt());
-    } else if (incoming.startsWith("N:")) {
-      moveNeck(incoming.substring(2).toInt());
-    } else if (incoming.startsWith("R:")) {
-      runBaseCommand(incoming.substring(2));
+    if (incoming.length() > 0) {
+      handleCommand(incoming);
     }
   }
 
-  if (shouldBlink && (millis() - lastBlinkAt) >= 6000) {
-    closeEye();
-    delay(250);
-    openEye();
-    lastBlinkAt = millis();
-  }
+  unsigned long now = millis();
+  updateTalk(now);
+  updateBlink(now);
+  updateNeckSequence(now);
 }

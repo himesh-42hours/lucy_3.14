@@ -15,15 +15,15 @@ Key changes:
 - multilingual speech input via OpenAI transcription when `OPENAI_API_KEY` is configured
 - same-language replies by default, with explicit language requests honored
 - graceful simulation mode when hardware ports are unavailable
-- 3-Mega hardware layout support:
-  left arm Mega, right arm Mega, and one shared aux Mega for jaw, eye, neck, and wheel base
+- 4-Mega hardware layout support:
+  left arm Mega, right arm Mega, head Mega for neck/jaw/eyes/eyelids, and a separate base Mega
 
 ## Setup
 
 1. Create an environment file from `.env.example`.
 2. Install dependencies from `requirements.txt`.
 3. Set serial ports and API keys in `.env`.
-4. Flash the new Mega sketches from `Sean/Arduino-Progs/megaArmController.ino` and `Sean/Arduino-Progs/megaAuxController.ino`.
+4. Flash the new Mega sketches from `Sean/Arduino-Progs/megaArmController.ino`, `Sean/Arduino-Progs/megaAuxController.ino`, and `Sean/Arduino-Progs/megaBaseController.ino`.
 5. Start the robot runtime with:
 
 ```bash
@@ -50,9 +50,19 @@ ANUSHKA_CAMERA_NAME_HINT=Kreo
 ANUSHKA_ENABLE_MONITORING=true
 ANUSHKA_ENABLE_VISION=false
 
-ANUSHKA_LEFT_ARM_MEGA_PORT=/dev/ttyACM0
-ANUSHKA_RIGHT_ARM_MEGA_PORT=/dev/ttyACM1
-ANUSHKA_AUX_MEGA_PORT=/dev/ttyACM2
+ANUSHKA_LEFT_ARM_MEGA_ID=usb-Arduino_LeftArm
+ANUSHKA_RIGHT_ARM_MEGA_ID=usb-Arduino_RightArm
+ANUSHKA_HEAD_MEGA_ID=usb-Arduino_Head
+ANUSHKA_BASE_MEGA_ID=usb-Arduino_Base
+
+# Direct port fallback still works if you prefer fixed paths:
+# ANUSHKA_LEFT_ARM_MEGA_PORT=/dev/serial/by-id/...
+# ANUSHKA_RIGHT_ARM_MEGA_PORT=/dev/serial/by-id/...
+# ANUSHKA_HEAD_MEGA_PORT=/dev/serial/by-id/...
+# ANUSHKA_BASE_MEGA_PORT=/dev/serial/by-id/...
+
+# Legacy alias for the head Mega still works:
+# ANUSHKA_AUX_MEGA_PORT=/dev/ttyACM2
 ```
 
 For your hardware:

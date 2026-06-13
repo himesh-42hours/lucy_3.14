@@ -1,17 +1,69 @@
-Microphone: pulse (ANUSHKA_MIC_DEVICE_INDEX env override).
+Microphone: pulse (matched ANUSHKA_MIC_NAME_HINT='puls').
 Skipping ambient calibration: using fixed energy threshold (energy_threshold=300).
-Mic RMS sample: 694
+Mic RMS sample: 685
 1
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: سوفٹرننگیا لاوزر سینسیسیز
+Normalized: softening the laser senses.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: क्या मैंने अभी मतलब नॉर्मल डैड रखा है क्योंकि मतलब अभी टेस्ट कर रहा था तो बाद में मुझे लग रहा हूँ कि लाइट को कम कर सकता हूँ हाँ बाद में कम कर
+Normalized: i think i've set the normal dad mode for now because i was testing it, but later i feel i can lower the light. yes, lower it later.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: نہیں، زیادہ دور تو ابھی نہیں ہو پائے گی کیونکہ اب دوبارہ
+Normalized: no, it won't be too far yet because it's happening again now.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: हाँ तो वायर हमारे पास स्टॉडिंग में है।
+Normalized: yes, we have the wire in stock.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: میں بہت دیکھتا ہوں دیکھتا ہوں وہ بیسکلی ایکچول بیس ہوتے ہیں
+Normalized: i see a lot; basically, they are actual bases.
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
 STT backend: google
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
 STT backend: openai
-Heard: Halo
-Normalized: hello.
-Offline Q&A hit (dynamic).
+Heard: اس موسم میں پیشنٹوں کا بات کرتا ہوں پھر مل کر کے
+Normalized: i'll talk about the patients this season and then we'll meet.
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
 STT backend: google
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: نہیں اور ہوں گے اس لیے ایسی پوری چینل میں ایسٹم کے کئی ساری چیزیں مل جائیں گی چار ڈسکوس
+Normalized: no, there will be more, so you will find many things related to the system in the entire channel, including four discussions.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: google
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: Ninguém se apodera.
+Normalized: no one takes over.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: google
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: google
+Captured audio; transcribing...
+STT backend: openai
+Heard: Yeah, I mean,
+Normalized: please provide the full message for translation.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+STT backend: openai
+Heard: وری کانٹ کو لے کے بھی کچھ ایسا کنسرن اور کو لے کے بھی بات ہے بات ہے
+Normalized: there are concerns regarding viri kant as well.
 2
