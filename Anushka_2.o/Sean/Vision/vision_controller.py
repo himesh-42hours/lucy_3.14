@@ -368,15 +368,23 @@ while True:
                 if person is recognized, special wish and add to last5faces
                 else: normal hi
                 """
-                muEncodings= face_recognition.face_encodings(mu)[0]
-                matches= face_recognition.compare_faces(encodeListKnown, muEncodings, 0.48)
+                encs = face_recognition.face_encodings(
+                    mu,
+                    num_jitters=5
+                )
+
+                if not encs:
+                    continue
+
+                muEncodings = encs[0]
+                matches= face_recognition.compare_faces(encodeListKnown, muEncodings, 0.55)
                 faceDis= face_recognition.face_distance(encodeListKnown, muEncodings)
                 matchIndex= np.argmin(faceDis)
 
-                if matches[matchIndex] and faceDis[matchIndex] <= 0.48:
+                if matches[matchIndex] and faceDis[matchIndex] <= 0.55:
                     nameToWrite= canonical_display_name(classNames[matchIndex])
                     write_current_person(nameToWrite)
-                elif 0.48 < faceDis[matchIndex] <= 0.52:
+                elif 0.55 < faceDis[matchIndex] <= 0.65:
                     nameToWrite= canonical_display_name(classNames[matchIndex])
                     write_current_person(f"someone like {nameToWrite}")
                 else:

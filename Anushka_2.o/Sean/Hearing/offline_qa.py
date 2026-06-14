@@ -44,11 +44,55 @@ _STOPWORDS = {
     "might", "tell", "about", "please",
 }
 
+_KIET_TERMS = {
+    "kiet",
+    "anooshka",
+    "ghaziabad",
+    "ece",
+    "computer",
+    "science",
+    "library",
+    "amul",
+    "hostel",
+    "auditorium",
+    "admission",
+    "scholarship",
+    "dinobots",
+}
+
+
+def _canonicalize(text: str) -> str:
+    replacements = {
+        "iit": "kiet",
+        "kit": "kiet",
+        "k i e t": "kiet",
+
+        "cse": "computer science",
+        "cs": "computer science",
+
+        "it department": "information technology",
+        "i t": "information technology",
+
+        "anooshkaa": "anooshka",
+        "anushka": "anooshka",
+
+        "director sir": "director",
+        "joint director sir": "joint director",
+    }
+
+    text = text.lower()
+
+    for src, dst in replacements.items():
+        text = text.replace(src, dst)
+
+    return text
+
 
 def _normalize(text: str) -> str:
     if not text:
         return ""
-    text = text.lower().translate(_PUNCT_TABLE)
+    text = _canonicalize(text)
+    text = text.translate(_PUNCT_TABLE)
     return re.sub(r"\s+", " ", text).strip()
 
 
@@ -363,6 +407,25 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
             "The fourth year boys hostel is called Vivek Anand, adjacent to the third year boys hostel in the southern part of campus. From reception, go straight to Computer Sciences, take the left turn, then turn right.",
         ],
     ),
+    (
+    ["where is placement cell", "placement office", "placement department", "CRPC"],
+    [
+        "The placement cell is located infront of the G block. Please proceed through the left pathway from the reception."
+    ],
+    ),
+
+    (
+        ["where is fee counter", "accounts office", "accounts department"],
+        [
+            "The accounts and fee section is located inside the admission office."
+        ],
+    ),
+    (
+        ["where is parking", "parking area"],
+        [
+            "The main parking area is located infront of the H block. Please take the left pathway."
+        ],
+    ),
 ]
 
 
@@ -420,6 +483,10 @@ class _OfflineQAIndex:
                 return True, random.choice(answers), "exact"
 
         query_kws = _keywords(query)
+        is_kiet_query = any(
+            term in norm
+            for term in _KIET_TERMS
+        )
         if query_kws:
             best: tuple[float, list[str]] | None = None
             for _entry_norm, entry_kws, answers in self._entries:
@@ -429,12 +496,15 @@ class _OfflineQAIndex:
                 if overlap == 0:
                     continue
                 score = overlap / max(len(entry_kws), 1)
+
+                if is_kiet_query:
+                    score += 0.20
                 if score >= 0.6 and (best is None or score > best[0]):
                     best = (score, answers)
             if best is not None:
                 return True, random.choice(best[1]), "keyword"
 
-        close = difflib.get_close_matches(norm, self._normalized_keys, n=1, cutoff=0.78)
+        close = difflib.get_close_matches(norm, self._normalized_keys, n=1, cutoff=0.65)
         if close:
             target = close[0]
             for entry_norm, _, answers in self._entries:

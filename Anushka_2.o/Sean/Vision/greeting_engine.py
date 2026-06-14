@@ -32,7 +32,7 @@ FACES_DIR = SEAN_ROOT / "Vision" / "faces"
 LAST_SEEN_FILE = SEAN_ROOT / "Vision" / "lastSeenMe.txt"
 CURRENTLY_PRESENT_FILE = SEAN_ROOT / "Vision" / "currentlyPresent.txt"
 
-FACE_DISTANCE_THRESHOLD = 0.48
+FACE_DISTANCE_THRESHOLD = 0.55
 
 from Vision.profile_store import canonical_display_name, greeting_for_name
 
@@ -116,7 +116,10 @@ class GreetingEngine:
                 if img is None:
                     continue
                 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                encodings = face_recognition.face_encodings(img_rgb)
+                encodings = face_recognition.face_encodings(
+                    img_rgb,
+                    num_jitters=5
+                )
                 if not encodings:
                     continue
                 self._known_encodings.append(encodings[0])
@@ -187,7 +190,10 @@ class GreetingEngine:
             return None
         try:
             rgb = self._cv2.cvtColor(frame, self._cv2.COLOR_BGR2RGB)
-            encodings = self._face_recognition.face_encodings(rgb)
+            encodings = self._face_recognition.face_encodings(
+                rgb,
+                num_jitters=3
+            )
             if not encodings:
                 return None
             for encoding in encodings:

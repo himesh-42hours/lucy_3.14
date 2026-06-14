@@ -19,6 +19,8 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
 
 import requests
 import speech_recognition as sr
+from faster_whisper import WhisperModel
+import tempfile
 from playsound import playsound
 
 from anushka_runtime.config import (
@@ -82,6 +84,11 @@ ENERGY_THRESHOLD = _int_env("ANUSHKA_ENERGY_THRESHOLD", None)
 
 bridge = OpenAIRobotBridge()
 conversation_history: list[str] = []
+WHISPER_MODEL = WhisperModel(
+    "small.en",
+    device="cpu",
+    compute_type="int8"
+)
 
 # Load knowledge once at module startup — never re-read per turn.
 def _load_knowledge_once() -> str:
@@ -163,8 +170,8 @@ def _build_recognizer() -> sr.Recognizer:
     recognizer.dynamic_energy_threshold = USE_DYNAMIC_ENERGY_THRESHOLD
     if ENERGY_THRESHOLD is not None:
         recognizer.energy_threshold = max(50, ENERGY_THRESHOLD)
-    recognizer.pause_threshold = 0.5
-    recognizer.non_speaking_duration = 0.3
+    recognizer.pause_threshold = 0.4
+    recognizer.non_speaking_duration = 0.15
     return recognizer
 
 
@@ -205,27 +212,36 @@ def _calibrate(recognizer: sr.Recognizer, mic: sr.Microphone) -> None:
 
 
 def _transcribe(recognizer: sr.Recognizer, audio: sr.AudioData) -> str:
-    if bridge.available:
-        try:
-            text = bridge.transcribe_wav(audio.get_wav_data())
-            if text:
-                if DEBUG_HEARING:
-                    _diag("STT backend: openai")
-                return text
-        except Exception as exc:
-            _diag(f"OpenAI transcription failed ({exc!s}); falling back to Google.")
-
     try:
-        if DEBUG_HEARING:
-            _diag("STT backend: google")
-        return recognizer.recognize_google(audio, language=GOOGLE_STT_LANGUAGE)
-    except sr.UnknownValueError:
-        return ""
-    except sr.RequestError as exc:
-        _diag(f"Online speech-recognition unreachable ({exc!s}).")
-        return ""
+        with tempfile.NamedTemporaryFile(
+            suffix=".wav",
+            delete=False
+        ) as temp_file:
+
+            temp_file.write(audio.get_wav_data())
+            temp_path = temp_file.name
+
+        segments, info = WHISPER_MODEL.transcribe(
+            temp_path,
+            beam_size=5,
+            language="en",
+            vad_filter=True
+        )
+
+        text = " ".join(
+            segment.text
+            for segment in segments
+        ).strip()
+
+        try:
+            os.remove(temp_path)
+        except Exception:
+            pass
+
+        return text
+
     except Exception as exc:
-        _diag(f"Speech recognition error ({exc!s}).")
+        _diag(f"Whisper transcription failed ({exc!s}).")
         return ""
 
 
@@ -561,7 +577,18 @@ def main() -> None:
             else:
                 mic_failure_count = 0
 
-            query = _transcribe(recognizer, audio).strip()
+            start_stt = time.time()
+
+            query = _transcribe(
+                recognizer,
+                audio
+            ).strip()
+
+            _diag(
+                f"Whisper STT took "
+                f"{time.time() - start_stt:.2f}s"
+            )
+
             if not query:
                 continue
 
