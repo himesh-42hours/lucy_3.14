@@ -123,7 +123,11 @@ class GreetingEngine:
                 if not encodings:
                     continue
                 self._known_encodings.append(encodings[0])
-                self._known_names.append(os.path.splitext(entry)[0])
+                base_name = os.path.splitext(entry)[0]
+
+                base_name = base_name.split("_")[0]
+
+                self._known_names.append(base_name)
             except Exception as exc:
                 _diag(f"Failed to encode {entry} ({exc!s}).")
 

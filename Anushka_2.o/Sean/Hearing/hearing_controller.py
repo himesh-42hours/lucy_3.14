@@ -255,6 +255,52 @@ def normalize_query(query: str) -> str:
             return query.lower()
     return query.lower()
 
+def correct_common_stt_errors(text: str) -> str:
+
+    corrections = {
+
+        # KIET
+        "iit": "kiet",
+        "kit": "kiet",
+        "kite": "kiet",
+        "key it": "kiet",
+        "k e t": "kiet",
+
+        # Anooshka
+        "anushka": "anooshka",
+        "anooshkaa": "anooshka",
+
+        # Weather
+        "whether": "weather",
+        "within today": "weather today",
+        "today length": "today weather",
+
+        # Common speech mistakes
+        "who am eye": "who am i",
+        "do you no who i am": "do you know who i am",
+
+        # Shutdown
+        "shut town": "shut down",
+        "shutdownn": "shut down",
+
+        # Campus
+        "hostel room": "hostel",
+        "admission office": "admission",
+        "placement office": "placement",
+
+        #Gestures
+        "salut": "do salute",
+        "salot": "do salute",
+        
+    }
+
+    text = text.lower()
+
+    for wrong, correct in corrections.items():
+        text = text.replace(wrong, correct)
+
+    return text
+
 
 def extract_step_count(query: str) -> int:
     match = re.search(r"\b(\d+)\b", query)

@@ -1,22 +1,40 @@
 Microphone: pulse (matched ANUSHKA_MIC_NAME_HINT='puls').
 Skipping ambient calibration: using fixed energy threshold (energy_threshold=300).
-Mic RMS sample: 1296
+Mic RMS sample: 3892
 1
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
+Whisper STT took 1.39s
+Heard: But
+Normalized: but
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.09s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.09s
+Captured audio; transcribing...
+Whisper STT took 0.09s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.08s
+Captured audio; transcribing...
+Whisper STT took 1.20s
+Heard: I don't know
+Normalized: i’m not sure.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.08s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
 Whisper STT took 0.09s
 Captured audio; transcribing...
 Whisper STT took 0.08s
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 0.09s
 Captured audio; transcribing...
-Whisper STT took 0.08s
-Listening... (energy_threshold=300)
-Captured audio; transcribing...
-Whisper STT took 0.07s
-Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 0.09s
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
 Whisper STT took 0.09s
@@ -24,12 +42,11 @@ Captured audio; transcribing...
 Whisper STT took 0.08s
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.07s
-Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 1.16s
+Heard: Hello
+Normalized: hello.
+Offline Q&A hit (dynamic).
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.07s
-Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 0.10s
 2

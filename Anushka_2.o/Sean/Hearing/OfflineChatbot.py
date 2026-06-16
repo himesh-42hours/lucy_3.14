@@ -21,7 +21,7 @@ def OfflineChatbot(query: str) -> str:
     query = query.lower()
 
     if ListCheck(["what is your name", "who are you"], query):
-        return retOutOf(["Hello! My name is Anooshka and I am K I E T group of institution's social humanoid robot.", "Hello! My name is Anooshka and I am K I E T group of institution's social humanoid robot. I am smart enough to solve all human queries and love to interact with humans."])
+        return retOutOf(["Hello! My name is Anooshka and I am K I E T Deemed to be University social humanoid robot.", "Hello! My name is Anooshka and I am K I E T Deemed to be University's social humanoid robot. I am smart enough to solve all human queries and love to interact with humans."])
 
         
     elif ListCheck(["what is your age", "what is your birth date", "how old are you", "when is your birthday", "when does your birthday come", "on what date is your birthday"], query):
@@ -137,7 +137,7 @@ def OfflineChatbot(query: str) -> str:
         return "I am equipped with computer vision, multilingual speech understanding, over 50 hand gestures and over 30 eye gestures. I can also help with home automation and weather predictions."
 
     if ListCheck(["where do you live", "where are you from", "your home"], query):
-        return "I live at K I E T Group of Institutions, Ghaziabad, in Delhi N C R."
+        return "I live at K I E T Deemed To be University, Ghaziabad, in Delhi N C R."
 
     return ""
 

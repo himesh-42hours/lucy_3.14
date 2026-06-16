@@ -187,15 +187,15 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
     (
         ["what is your name", "who are you", "your name"],
         [
-            "I am Anooshka, the humanoid robot designed and developed at K I E T Group of Institutions.",
+            "I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.",
             "My name is Anooshka. I love interacting with people around me.",
         ],
     ),
     (
         ["who made you", "who created you", "who built you", "who developed you"],
         [
-            "I was developed at K I E T Group of Institutions, Ghaziabad. Mr. Heemesh Vijai programmed me as I am.",
-            "My development team includes Mr. Vunsh Tyaagee, Mr. Koonwar Singh, Mr. Heemesh Vijai, Mr. Kwaazi Jiyaur Rahmaan and Mr. Pree-yanshoo Kumaaar.",
+            "I was developed at K I E T Deemed To be University, Ghaziabad.",
+            "My development team includes Mr. Vunsh Tyaagee, Mr. Koonwar Singh, Mr. Gurv Uggurwaal, Mr. Kwaazi Jiyaur Rahmaan and Mr. Pree-yanshoo Kumaaar. Mr. Heemesh Vijai.",
         ],
     ),
     (
@@ -235,13 +235,18 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
     (
         ["where do you live", "where are you from", "where is your home", "your home"],
         [
-            "I live at K I E T Group of Institutions, Ghaziabad, in Delhi N C R.",
+            "I live at K I E T Deemed To be University, Ghaziabad, in Delhi N C R.",
         ],
     ),
     # --- KIET leadership ---
     (
-        ["who is joint director", "who is the joint director", "joint director of kiet"],
+        ["who is Pro vice chancellor", "who is the joint director", "joint director of kiet"],
         ["The Joint Director of K I E T Group is Dr. Manoj Goyal."],
+    ),
+
+    (
+        ["who is vice chancellor", "who is the director", "director of kiet"],
+        ["The Vice chancellor of K I E T Group is Professor Nagaraj Ramrao."],
     ),
     (
         ["who is principal", "who is the director", "who leads kiet", "who is director of kiet", "kiet director"],
@@ -263,9 +268,9 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
         ],
     ),
     (
-        ["where is amul", "amul counter", "amul in kiet", "amul location"],
+        ["where is healthy hut", "healthy", "healthy hut in kiet", "healthy hut location"],
         [
-            "The Amul counter in K I E T is situated in front of the MBA building, roughly in the centre of the campus. From the reception, take the straight path and turn left after the Electronics and Communication building. You will reach the Amul counter.",
+            "The healthy hut in K I E T is situated in front of the MBA building, roughly in the centre of the campus. From the reception, take the straight path and turn left after the Electronics and Communication building. You will reach the Healthy hut counter.",
         ],
     ),
     (

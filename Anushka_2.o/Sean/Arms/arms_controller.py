@@ -370,16 +370,6 @@ def do_okay():
     okayPalm(1)
 
 
-def do_horns():
-    Seedha(righth)
-    hornsPalm(1)
-
-
-def do_mamamiah():
-    Seedha(righth)
-    mamamiahPalm(1)
-
-
 def do_open_both_palms():
     Seedha(lefth)
     openPalm(0)
@@ -396,64 +386,10 @@ def do_close_both_palms():
     closePalm(1)
 
 
-def do_cheese():
-    Seedha(righth)
-    cheesePalm(1)
-
-
-def do_take():
-    take()
-    shakeHandPalm(1)
-
-
-def do_count_one():
-    countIt()
-    oneCountPalm(1)
-
-
-def do_count_two():
-    countIt()
-    twoCountPalm(1)
-
-
-def do_count_three():
-    countIt()
-    threeCountPalm(1)
-
-
-def do_count_four():
-    countIt()
-    fourCountPalm(1)
-
-
-def do_count_five():
-    countIt()
-    openPalm(1)
-
-
-def do_magic_palm():
-    Seedha(righth)
-    jaaduTonaPalm()
-
-
-def do_call_me():
-    callMe()
-    callMePalm()
-
-
-def do_close_together():
-    Seedha(lefth)
-    closePalm(0)
-    Seedha(righth)
-    time.sleep(2)
-    closePalm(1)
-
-
 # Add new hand poses here when you expand the gesture library.
 # Keep the numeric keys aligned with `Arms/gesture_registry.py`.
 GESTURE_ACTIONS = {
     "1": do_home_open,
-    "2": do_yawn_stretch,
     "3": do_shake_hand,
     "4": do_point_left,
     "5": do_point_right,
@@ -464,25 +400,12 @@ GESTURE_ACTIONS = {
     "10": lambda: None,
     "11": do_self_point,
     "12": do_salute,
-    "13": do_jaadu_tona,
     "14": do_middle_finger,
     "15": do_thumbs_up,
     "16": do_okay,
-    "17": do_horns,
-    "18": do_mamamiah,
     "19": lambda: None,
     "20": do_open_both_palms,
     "21": do_close_both_palms,
-    "22": do_cheese,
-    "23": do_take,
-    "24": do_count_one,
-    "25": do_count_two,
-    "26": do_count_three,
-    "27": do_count_four,
-    "28": do_count_five,
-    "29": do_magic_palm,
-    "30": do_call_me,
-    "31": do_close_together,
 }
 
 

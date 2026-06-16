@@ -1,0 +1,6 @@
+Query: But
+Anooshka: It seems like you might have something specific in mind. Could you please elaborate on what you're thinking or asking? I'm here to help!
+Query: I don't know
+Anooshka: That's perfectly fine! If you have any questions or topics you'd like to discuss, feel free to ask. I'm here to assist you!
+Query: Hello
+Anooshka: A very good evening! I am Anooshka. How may I help you?

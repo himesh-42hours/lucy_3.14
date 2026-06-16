@@ -43,6 +43,7 @@ try:
         ensure_profile,
         gesture_for_name,
         greeting_for_name,
+        is_vip,
     )
     _vision_stage("vision: core helpers imported")
     import cv2
@@ -120,7 +121,11 @@ def load_known_faces():
             continue
 
         loaded_images.append(img)
-        loaded_names.append(os.path.splitext(cls)[0])
+        base_name = os.path.splitext(cls)[0]
+
+        base_name = base_name.split("_")[0]
+
+        loaded_names.append(base_name)
 
     if skipped:
         _vision_stage(f"vision: skipped {len(skipped)} invalid face image(s)")
@@ -392,6 +397,8 @@ while True:
 
                 if shouldCheck and matches[matchIndex]:
                     name= classNames[matchIndex]
+                    print(f"[VISION] name={name}")
+                    print(f"[VISION] last5Faces={last5Faces}")
                     if name not in last5Faces:
                         if len(last5Faces)>=5:
                             last5Faces.pop(0)
@@ -408,44 +415,36 @@ while True:
                         lowered_name = name.lower().strip()
                         display_name = canonical_display_name(name)
 
-                        if "father" in lowered_name or "himesh" in lowered_name:
-                            todaysDate= datetime.datetime.now()
-                            print("Entered inside")
+                        gesture = gesture_for_name(name)
 
-                            lastSeenFile= open(LAST_SEEN_FILE, 'r')
-                            lastSeenDate= lastSeenFile.read()
-                            lastSeenFile.close()
-                            my_time= datetime.time()
-                            lastSeenPoora= datetime.datetime.combine(datetime.datetime.strptime(lastSeenDate,"%d-%m-%Y"), my_time)
-                            print(lastSeenPoora)
+                        greeting = greeting_for_name(name)
 
-                            timeDelta= todaysDate - lastSeenPoora
-                            print(str(timeDelta))
-                            if timeDelta.days > 30:
-                                writeToHaath("2")
-                                speak("I missed you so much sire ")
+                        if is_vip(name):
 
-                            else:
-                                writeToHaath("3")    #Shake hand gesture
-                                speak("Hello. Nice to meet you Himesh Vijay")
+                            print(
+                                f"[vision] VIP detected: {name}"
+                            )
+
+                            writeToHaath(gesture)
+
+                            speak(greeting)
+
+                        else:
+
+                            writeToHaath(gesture)
+
+                            speak(greeting)
                             
                             #Last seen file update
 
-                            lastSeenFile= open(LAST_SEEN_FILE, 'w')
-                            lastSeenDate= lastSeenFile.write(todaysDate.strftime("%d-%m-%Y"))
-                            lastSeenFile.close()
+                            #lastSeenDate= lastSeenFile.write(todaysDate.strftime("%d-%m-%Y"))
+                            #lastSeenFile= open(LAST_SEEN_FILE, 'w')
+                            #lastSeenFile.close()
 
-                            # To monitoring system
-                            moniWS= open(MONITOR_WS_FILE, 'a')
-                            moniWS.write("LastSeen- "+todaysDate.strftime("%d-%m-%Y"))
-                            moniWS.close()
-                        
-                        elif "manoj" in lowered_name: #Special known people
-                            writeToHaath(gesture_for_name(name, "3"))
-                            speak(greeting_for_name(name))
-                        else:   #other known people
-                            writeToHaath(gesture_for_name(name))
-                            speak(greeting_for_name(name))
+                            ## To monitoring system
+                            #moniWS= open(MONITOR_WS_FILE, 'a')
+                            #moniWS.write("LastSeen- "+todaysDate.strftime("%d-%m-%Y"))
+                            #moniWS.close()
 
                         #region Special Person
                         #todo Here

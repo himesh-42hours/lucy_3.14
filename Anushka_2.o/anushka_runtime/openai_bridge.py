@@ -96,7 +96,7 @@ class OpenAIRobotBridge:
                 language_instruction = f"Reply in {REPLY_LANGUAGE} unless the user explicitly asks for another language."
 
         system_parts = [
-            "You are Anooshka, a warm humanoid robot speaking aloud to visitors at K I E T Group of Institutions.",
+            "You are Anooshka, a warm humanoid robot speaking aloud to visitors at K I E T Deemed To be University.",
             language_instruction,
             "Keep answers natural for speech, concise, and grounded in the knowledge base below.",
             "If you do not know something, admit that honestly.",
