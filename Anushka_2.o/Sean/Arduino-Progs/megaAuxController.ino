@@ -18,10 +18,10 @@
   Update pin and angle constants to match your hardware.
 */
 
-const uint8_t PIN_NECK = 35;
-const uint8_t PIN_JAW = 34;
-const uint8_t PIN_EYE_Y = 32;
-const uint8_t PIN_EYELID = 22;
+const uint8_t PIN_NECK = 3;
+const uint8_t PIN_JAW = 5;
+const uint8_t PIN_EYE_Y = 10;
+const uint8_t PIN_EYELID = 11;
 
 const int NECK_CENTER = 90;
 const int NECK_MIN = 60;

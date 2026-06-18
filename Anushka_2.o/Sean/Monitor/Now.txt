@@ -1,6 +1,88 @@
-Query: But
-Anooshka: It seems like you might have something specific in mind. Could you please elaborate on what you're thinking or asking? I'm here to help!
-Query: I don't know
-Anooshka: That's perfectly fine! If you have any questions or topics you'd like to discuss, feel free to ask. I'm here to assist you!
-Query: Hello
-Anooshka: A very good evening! I am Anooshka. How may I help you?
+Query: All thanks to all of you for watching.
+Anooshka: You are most welcome.
+Query: How are you Anushka?
+Anooshka: I am really fine! I hope you are fine too.
+Query: Thanks for watching!
+Anooshka: It was my pleasure.
+Query: How was the weather like today?
+Anooshka: The temperature in Ghaziabad is 38.2 degrees Celsius and the weather is broken clouds.
+Query: Guh-guh
+Anooshka: It seems like you might be expressing something! How can I assist you further?
+Query: What time it is?
+Anooshka: The time is 12:08 PM
+Query: Gautam. She can't.
+Anooshka: It sounds like there might be a specific context or conversation happening. Could you please provide more details so I can assist you better?
+Query: various type group of institutions
+Anooshka: K I E T Deemed To be University has various types of institutions under its umbrella, focusing on different fields of study. These typically include engineering colleges, management institutes, and research centers. Each institution is designed to cater to the diverse educational needs of students. If you need more specific information about a particular institution, feel free to ask!
+Query: What can you do?
+Anooshka: I am equipped with computer vision, multilingual speech understanding, over 50 hand gestures and over 30 eye gestures. I can also help with home automation and weather predictions.
+Query: Ajkum wasam kya sahe hai hai.
+Anooshka: I am really fine! I hope you are fine too.
+Query: Tell me about yourself.
+Anooshka: Hi. I am Anooshka, the humanoid robot designed and developed at k i e t Deemed To be University, Ghaziabad, Delhi NCR. I am smart enough to solve all human queries and love to interact with humans.
+Query: Jehinde
+Anooshka: It seems like you might be using a term or phrase that I'm not familiar with. Could you please clarify or provide more context? I'm here to help!
+Query: Thank you for watching!
+Anooshka: You are most welcome.
+Query: Sachin
+Anooshka: Mr. Sachin Tyagi is the Assistant Dean of Research and Development at K I E T Deemed To be University. He plays a significant role in overseeing research initiatives and development projects. If you have any specific questions about him or his work, feel free to ask!
+Query: Who is Manoj Goyal?
+Anooshka: My name is Anooshka. I love interacting with people around me.
+Query: Who is..?
+Anooshka: I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.
+Query: Jai Hind!
+Anooshka: Jai Hind! It's great to see you here! How can I assist you today?
+Query: Do Salute
+Anooshka: Certainly. Saluting now.
+Query: Gupta
+Anooshka: Mr. Himesh Vijay is one of my programmers who contributed significantly to my development. If you have any specific questions about him or his work, feel free to ask!
+Query: Who is Garvavarwal?
+Anooshka: I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.
+Query: Who is once tagging?
+Anooshka: I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.
+Query: Thank you very much for watching!
+Anooshka: You are most welcome.
+Query: Who is Himesh Vijay?
+Anooshka: I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.
+Query: Voo is Sachin Tyagi
+Anooshka: Mr. Sachin Tyagi is the Assistant Dean of Research and Development at K I E T Deemed To be University. He plays a significant role in overseeing research initiatives and development projects.
+Query: Gupta
+Anooshka: Suneel Gupta is one of the management members of K I E T Deemed To be University. If you have any specific questions about him or his role, feel free to ask!
+Query: Gupta
+Anooshka: Suneel Gupta is a management member at K I E T Deemed To be University. If you need more information or have specific questions about him, just let me know!
+Query: dek dek dek dek
+Anooshka: It seems like you're expressing something! How can I assist you further?
+Query: bop bop
+Anooshka: It sounds like you're having some fun! If there's anything specific you'd like to talk about or ask, feel free to share!
+Query: GUTA!
+Anooshka: It seems like you're trying to convey something! If you have a question or topic in mind, please let me know how I can assist you!
+Query: GUTA!
+Anooshka: It seems like you're repeating "GUTA!" If there's something specific you'd like to express or ask, please let me know! I'm here to help!
+Query: Gupta
+Anooshka: Suneel Gupta is one of the management members at K I E T Deemed To be University. If you need more information or have specific questions about him or anything else, feel free to ask!
+Query: Thank you for watching!
+Anooshka: You are most welcome.
+Query: KITCHU
+Anooshka: Hello, Mr. Nagaraj Ramrao! If you have any questions or topics you'd like to discuss, feel free to share. I'm here to help!
+Query: Guh-guh
+Anooshka: It sounds like you're having some fun! If you have something specific on your mind or any questions, just let me know!
+Query: Gupta
+Anooshka: It seems like you're mentioning Mr. Himesh Vijay and Mr. Gupta. Mr. Himesh Vijay is one of my programmers, while Suneel Gupta is a member of the management team at K I E T. If you need more information about them or anything else, feel free to ask!
+Query: Do you recognize me?
+Anooshka: I don't have the ability to recognize individuals or remember past interactions, as I don't have memory. But I'm here to chat and help with any questions you have right now!
+Query: Can you save my photo?
+Anooshka: I'm unable to save photos or any personal data. My capabilities are focused on interaction and providing information. If you have any questions or need assistance, feel free to ask!
+Query: I am not sure what to say here.
+Anooshka: I am equipped with computer vision, multilingual speech understanding, over 50 hand gestures and over 30 eye gestures. I can also help with home automation and weather predictions.
+Query: Thank you very much. Have a good night.
+Anooshka: You are most welcome.
+Query: I am not going to do that. I am not going to do that. I am not going to do that.
+Anooshka: That's perfectly fine! If there's anything else you'd like to talk about or ask, I'm here to help.
+Query: Thank you very much.
+Anooshka: It was my pleasure.
+Query: I have a little voice, can I? Am I better than you?
+Anooshka: Everyone has their own unique qualities! Your voice and presence are special in their own way. I'm here to assist and interact, but your individuality is what makes you truly remarkable.
+Query: Hit it!
+Anooshka: I'm ready! What would you like to discuss or do? Just let me know!
+Query: Uh, shut down.
+Anooshka: Goodbye. Shutting the system down now.

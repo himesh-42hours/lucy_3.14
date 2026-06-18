@@ -389,7 +389,7 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
         ],
     ),
     (
-        ["where is first year boys hostel", "where is chandragupt hostel", "first year hostel"],
+        ["where is boys hostel","where is first year boys hostel", "where is chandragupt hostel", "first year hostel"],
         [
             "The first year boys hostel is called Chandragupt and is adjacent to the main parking area. From reception, take the straight path, turn left at the ECE sign board, move straight until you find the Applied Sciences entryway. The hostel is just behind that building.",
         ],

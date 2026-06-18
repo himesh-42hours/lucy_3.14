@@ -258,7 +258,7 @@ def Seedha(ard):
 
 
 def salute():
-    setValsAll(righth, 150, 80, 40, 60, slow=True)
+    setValsAll(righth, 150, 100, 120, 0, slow=True)
 
 
 def DownLeft():

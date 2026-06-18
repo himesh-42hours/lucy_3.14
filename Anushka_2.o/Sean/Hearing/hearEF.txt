@@ -1,52 +1,273 @@
 Microphone: pulse (matched ANUSHKA_MIC_NAME_HINT='puls').
 Skipping ambient calibration: using fixed energy threshold (energy_threshold=300).
-Mic RMS sample: 3892
+Mic RMS sample: 2126
 1
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
+Whisper STT took 4.66s
+Heard: All thanks to all of you for watching.
+Normalized: thank you all for watching.
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.34s
+Heard: How are you Anushka?
+Normalized: how are you, anooshka?
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 2.97s
+Heard: Thanks for watching!
+Normalized: thank you for watching!
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.32s
+Heard: How was the weather like today?
+Normalized: what was the weather like today?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 3.37s
+Heard: Guh-guh
+Normalized: guh-guh.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.28s
+Heard: What time it is?
+Normalized: what time is it?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 3.78s
+Heard: Gautam. She can't.
+Normalized: gautam, she can't.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 1.40s
+Heard: various type group of institutions
+Normalized: various types of institutional groups
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.30s
+Heard: What can you do?
+Normalized: what are your capabilities?
+Offline Q&A hit (exact).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 4.35s
+Heard: Ajkum wasam kya sahe hai hai.
+Normalized: how are you doing?
+Offline Q&A hit (exact).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 1.33s
+Heard: Tell me about yourself.
+Normalized: please share information about yourself.
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.31s
+Heard: Jehinde
+Normalized: jehinde
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.46s
+Heard: Thank you for watching!
+Normalized: thank you for watching!
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 3.21s
+Heard: Sachin
+Normalized: sachin
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.52s
+Heard: Who is Manoj Goyal?
+Normalized: who is manoj goyal?
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.28s
+Heard: Who is..?
+Normalized: who is...?
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.25s
+Heard: Jai Hind!
+Normalized: hail india!
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.30s
+Heard: Do Salute
+Normalized: give a do salutee.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.44s
+Heard: Gupta
+Normalized: gupta
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
 Whisper STT took 1.39s
-Heard: But
-Normalized: but
+Heard: Who is Garvavarwal?
+Normalized: who is garvavarwal?
+Offline Q&A hit (keyword).
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.09s
+Whisper STT took 0.03s
+Captured audio; transcribing...
+Whisper STT took 1.36s
+Heard: Who is once tagging?
+Normalized: who is once tagging?
+Offline Q&A hit (keyword).
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.09s
-Captured audio; transcribing...
-Whisper STT took 0.09s
+Whisper STT took 1.31s
+Heard: Thank you very much for watching!
+Normalized: thank you for watching!
+Offline Q&A hit (keyword).
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 1.36s
+Heard: Who is Himesh Vijay?
+Normalized: who is himesh vijay?
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 6.47s
+Heard: Voo is Sachin Tyagi
+Normalized: voo is sachin tyagi.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 1.36s
+Heard: Gupta
+Normalized: gupta
+Listening... (energy_threshold=300)
 Captured audio; transcribing...
 Whisper STT took 1.20s
-Heard: I don't know
-Normalized: i’m not sure.
+Heard: Gupta
+Normalized: gupta
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 1.64s
+Heard: dek dek dek dek
+Normalized: please clarify your message.
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.09s
-Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 3.03s
+Heard: bop bop
+Normalized: bop bop
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.09s
+Whisper STT took 0.02s
 Captured audio; transcribing...
-Whisper STT took 0.09s
+Whisper STT took 3.07s
+Heard: GUTA!
+Normalized: guta!
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.09s
+Whisper STT took 0.02s
 Captured audio; transcribing...
-Whisper STT took 0.08s
+Whisper STT took 3.02s
+Heard: GUTA!
+Normalized: guta!
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 1.16s
-Heard: Hello
-Normalized: hello.
-Offline Q&A hit (dynamic).
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 1.25s
+Heard: Gupta
+Normalized: gupta
 Listening... (energy_threshold=300)
 Captured audio; transcribing...
-Whisper STT took 0.10s
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 0.01s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.25s
+Heard: Thank you for watching!
+Normalized: thank you for watching!
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 5.18s
+Heard: KITCHU
+Normalized: kietchu
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Captured audio; transcribing...
+Whisper STT took 0.02s
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 2.89s
+Heard: Guh-guh
+Normalized: guh-guh.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.27s
+Heard: Gupta
+Normalized: gupta
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.29s
+Heard: Do you recognize me?
+Normalized: do you remember me?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.31s
+Heard: Can you save my photo?
+Normalized: can you save my picture?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 8.66s
+Heard: I am not sure what to say here.
+Normalized: i'm unsure what to say here.
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.39s
+Heard: Thank you very much. Have a good night.
+Normalized: thank you! have a good night.
+Offline Q&A hit (keyword).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 10.27s
+Heard: I am not going to do that. I am not going to do that. I am not going to do that.
+Normalized: i am not going to do that.
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.22s
+Heard: Thank you very much.
+Normalized: thank you!
+Offline Q&A hit (exact).
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.45s
+Heard: I have a little voice, can I? Am I better than you?
+Normalized: can i have a little voice? am i better than you?
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 2.89s
+Heard: Hit it!
+Normalized: let's go!
+Listening... (energy_threshold=300)
+Captured audio; transcribing...
+Whisper STT took 1.23s
+Heard: Uh, shut down.
+Normalized: shut down.
 2

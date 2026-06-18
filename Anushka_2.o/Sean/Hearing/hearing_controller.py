@@ -20,8 +20,9 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
 import requests
 import speech_recognition as sr
 from faster_whisper import WhisperModel
-import tempfile
 from playsound import playsound
+import sounddevice as sd
+import numpy as np
 
 from anushka_runtime.config import (
     CONTROL_FILES,
@@ -89,6 +90,70 @@ WHISPER_MODEL = WhisperModel(
     device="cpu",
     compute_type="int8"
 )
+
+from Vision.profile_store import _load_profiles
+
+def build_whisper_prompt():
+
+    names = [
+        "Anushka",
+        "KIET Group of Institutions",
+        "KIET Ghaziabad",
+        "Humanoid Robot",
+        "Reception Robot",
+    ]
+
+    try:
+        profiles = _load_profiles()
+
+        for profile in profiles.values():
+
+            display_name = profile.get("display_name")
+
+            if display_name:
+                names.append(display_name)
+
+    except Exception:
+        pass
+
+    return "\n".join(names)
+
+
+
+def record_respeaker_audio(seconds=4):
+
+    audio = sd.rec(
+        int(seconds * 16000),
+        samplerate=16000,
+        channels=6,
+        dtype="float32",
+    )
+
+    sd.wait()
+
+    audio = audio[:, 0]
+
+    peak = np.max(np.abs(audio))
+
+    if peak > 0:
+        audio = audio / peak * 0.95
+
+    return np.squeeze(audio)
+
+def transcribe_respeaker(audio):
+
+    segments, info = WHISPER_MODEL.transcribe(
+        audio,
+        beam_size=5,
+        language="en",
+        vad_filter=True,
+        initial_prompt=build_whisper_prompt()
+    )
+
+    return " ".join(
+        segment.text
+        for segment in segments
+    ).strip()
 
 # Load knowledge once at module startup — never re-read per turn.
 def _load_knowledge_once() -> str:
@@ -211,38 +276,34 @@ def _calibrate(recognizer: sr.Recognizer, mic: sr.Microphone) -> None:
         _diag(f"Ambient calibration failed ({exc!s}). Using defaults.")
 
 
-def _transcribe(recognizer: sr.Recognizer, audio: sr.AudioData) -> str:
-    try:
-        with tempfile.NamedTemporaryFile(
-            suffix=".wav",
-            delete=False
-        ) as temp_file:
-
-            temp_file.write(audio.get_wav_data())
-            temp_path = temp_file.name
-
-        segments, info = WHISPER_MODEL.transcribe(
-            temp_path,
-            beam_size=5,
-            language="en",
-            vad_filter=True
-        )
-
-        text = " ".join(
-            segment.text
-            for segment in segments
-        ).strip()
-
-        try:
-            os.remove(temp_path)
-        except Exception:
-            pass
-
-        return text
-
-    except Exception as exc:
-        _diag(f"Whisper transcription failed ({exc!s}).")
-        return ""
+    #try:
+    #    with tempfile.NamedTemporaryFile(
+    #        suffix=".wav",
+    #        delete=False
+    #    ) as temp_file:
+#
+    #        temp_file.write(audio.get_wav_data())
+    #        temp_path = temp_file.name
+#
+    #    segments, info = WHISPER_MODEL.transcribe(
+    #        temp_path,
+    #        beam_size=5,
+    #        language="en",
+    #        vad_filter=True,
+    #        initial_prompt=build_whisper_prompt()
+    #    )
+#
+    #    text = " ".join(
+    #        segment.text
+    #        for segment in segments
+    #    ).strip()
+#
+    #    try:
+    #        os.remove(temp_path)
+    #    except Exception:
+    #        pass
+#
+    #    return text
 
 
 def normalize_query(query: str) -> str:
@@ -291,6 +352,8 @@ def correct_common_stt_errors(text: str) -> str:
         #Gestures
         "salut": "do salute",
         "salot": "do salute",
+        "jai hindu": "do salute",
+        "hail hindu": "do salute",
         
     }
 
@@ -577,12 +640,7 @@ def main() -> None:
                 if DEBUG_HEARING and (time.time() - last_listen_diag) > 5.0:
                     _diag(f"Listening... (energy_threshold={int(getattr(recognizer, 'energy_threshold', 0))})")
                     last_listen_diag = time.time()
-                with mic as source:
-                    audio = recognizer.listen(
-                        source,
-                        timeout=LISTEN_TIMEOUT_SECONDS,
-                        phrase_time_limit=PHRASE_TIME_LIMIT_SECONDS,
-                    )
+                audio = record_respeaker_audio(4)
                 # Visual blink: signals end-of-speech detected, transcription begins.
                 writeToEye("10")
                 if DEBUG_HEARING:
@@ -625,10 +683,7 @@ def main() -> None:
 
             start_stt = time.time()
 
-            query = _transcribe(
-                recognizer,
-                audio
-            ).strip()
+            query = transcribe_respeaker(audio).strip()
 
             _diag(
                 f"Whisper STT took "
@@ -643,6 +698,7 @@ def main() -> None:
 
             log_query(query)
             normalized = normalize_query(query)
+            normalized = correct_common_stt_errors(normalized)
 
             if DEBUG_HEARING:
                 _diag(f"Normalized: {normalized[:200]}")

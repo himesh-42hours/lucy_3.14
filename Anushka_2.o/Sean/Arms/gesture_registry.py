@@ -20,7 +20,7 @@ GESTURES: tuple[GestureSpec, ...] = (
         code="12",
         name="salute",
         reply="Certainly. Saluting now.",
-        phrases=("salute", "do salute", "give salute"),
+        phrases=("salute", "do salute", "give salute", "give a do salute", "do salutee", "salot", "salut", "perform salute", "jai hind", "jai heend", "jay heend"),
     ),
     GestureSpec(
         code="6",

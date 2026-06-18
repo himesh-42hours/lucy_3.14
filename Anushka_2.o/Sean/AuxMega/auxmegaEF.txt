@@ -1,3 +1,2 @@
-Head Mega port /dev/anushka_head unavailable ([Errno 2] could not open port /dev/anushka_head: [Errno 2] No such file or directory: '/dev/anushka_head'). Running in simulation mode.
 1
 2

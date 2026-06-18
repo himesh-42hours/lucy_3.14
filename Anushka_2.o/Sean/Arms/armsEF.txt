@@ -1,4 +1,13 @@
-Could not open left arm Mega (/dev/anushka_left_arm): [Errno 2] could not open port /dev/anushka_left_arm: [Errno 2] No such file or directory: '/dev/anushka_left_arm'. Running in simulation mode for that side.
-Could not open right arm Mega (/dev/anushka_right_arm): [Errno 2] could not open port /dev/anushka_right_arm: [Errno 2] No such file or directory: '/dev/anushka_right_arm'. Running in simulation mode for that side.
 1
+Unknown arm gesture command: '23'
+Unknown arm gesture command: '29'
+Unknown arm gesture command: '18'
+Unknown arm gesture command: '23'
+Unknown arm gesture command: '29'
+Unknown arm gesture command: '24'
+Unknown arm gesture command: '24'
+Unknown arm gesture command: '24'
+Unknown arm gesture command: '29'
+Unknown arm gesture command: '24'
+Unknown arm gesture command: '18'
 2

@@ -1,2 +1,1 @@
-Base serial port /dev/anushka_base is unavailable. Running in simulation mode.
 1
