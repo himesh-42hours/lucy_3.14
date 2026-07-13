@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+mic_respeaker
 
 # Python
 __pycache__/

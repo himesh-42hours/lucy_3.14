@@ -185,7 +185,7 @@ _DYNAMIC_QA: list[tuple[list[str], Callable[[], str]]] = [
 # common questions never miss.
 _STATIC_QA: list[tuple[list[str], list[str]]] = [
     (
-        ["what is your name", "who are you", "your name"],
+        ["tell me about yourself"],
         [
             "I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.",
             "My name is Anooshka. I love interacting with people around me.",
@@ -240,18 +240,18 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
     ),
     # --- KIET leadership ---
     (
-        ["who is Pro vice chancellor", "who is the joint director", "joint director of kiet"],
-        ["The Joint Director of K I E T Group is Dr. Manoj Goyal."],
+        ["who is Pro vice chancellor", "who is the joint director", "joint director of kiet","who is manoj goyal", "manoj goyal", "provisional chancellor"],
+        ["The Pro vice chncellor of K I E T Deemed to be University is Dr. Manoj Goyal."],
     ),
 
     (
-        ["who is vice chancellor", "who is the director", "director of kiet"],
-        ["The Vice chancellor of K I E T Group is Professor Nagaraj Ramrao."],
+        ["who is vice chancellor", "who is the director", "director of kiet", "vice chancellor"],
+        ["The Vice chancellor of K I E T Deemed to be University is Professor Nagaraj Ramrao."],
     ),
     (
         ["who is principal", "who is the director", "who leads kiet", "who is director of kiet", "kiet director"],
         [
-            "The vision of K I E T is led by Dr. Manoj Goyal, our Joint Director, and Mr. Sachin Tyagi, the Assistant Dean of Research and Development.",
+            "The vision of K I E T is led by Dr. Manoj Goyal, our pro vice chancellor, and Mr. vibhav kumar sachan, the Assistant Dean of Research and Development.",
         ],
     ),
     (

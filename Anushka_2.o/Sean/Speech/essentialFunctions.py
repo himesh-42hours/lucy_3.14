@@ -10,6 +10,9 @@ import ctypes
 import os
 import tempfile
 from pathlib import Path
+import asyncio
+import websockets
+import json
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -27,6 +30,31 @@ from anushka_runtime.config import CONTROL_FILES, TTS_ENGINE
 from anushka_runtime.ipc import append_message
 from anushka_runtime.openai_bridge import OpenAIRobotBridge
 from runtime_helpers import ListCheck, retOutOf, writeToGardan
+
+
+def notify_ui(event,text=""):
+
+    try:
+
+        async def send():
+
+            uri="ws://localhost:8765"
+
+            async with websockets.connect(uri) as ws:
+
+                await ws.send(
+                    json.dumps(
+                        {
+                            "type":event,
+                            "text":text
+                        }
+                    )
+                )
+
+        asyncio.run(send())
+
+    except:
+        pass
 
 
 def _suppress_alsa_warnings() -> None:
@@ -271,10 +299,20 @@ def _speak_text(sentence: str) -> None:
         return
     try:
         with _speech_lock():
-            if _speak_with_openai(sentence):
-                return
-            if _speak_with_pyttsx3(sentence):
-                return
+
+            notify_ui("start", sentence)
+
+            try:
+
+                if _speak_with_openai(sentence):
+                    return
+
+                if _speak_with_pyttsx3(sentence):
+                    return
+
+            finally:
+
+                notify_ui("stop")
             # Last-resort visibility: log so the operator knows speech was lost.
             sys.stderr.write(f"[speech] No working TTS backend; line lost: {sentence!r}\n")
     except Exception as exc:

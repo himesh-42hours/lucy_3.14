@@ -354,6 +354,10 @@ def correct_common_stt_errors(text: str) -> str:
         "salot": "do salute",
         "jai hindu": "do salute",
         "hail hindu": "do salute",
+        "do salute anushka": "do salute",
+        "salute": "do salute",
+        "salute anushka": "do salute",
+        "jai hindi": "do salute",
         
     }
 
