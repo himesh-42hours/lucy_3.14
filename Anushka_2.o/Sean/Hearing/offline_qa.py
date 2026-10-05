@@ -44,11 +44,55 @@ _STOPWORDS = {
     "might", "tell", "about", "please",
 }
 
+_KIET_TERMS = {
+    "kiet",
+    "anooshka",
+    "ghaziabad",
+    "ece",
+    "computer",
+    "science",
+    "library",
+    "amul",
+    "hostel",
+    "auditorium",
+    "admission",
+    "scholarship",
+    "dinobots",
+}
+
+
+def _canonicalize(text: str) -> str:
+    replacements = {
+        "iit": "kiet",
+        "kit": "kiet",
+        "k i e t": "kiet",
+
+        "cse": "computer science",
+        "cs": "computer science",
+
+        "it department": "information technology",
+        "i t": "information technology",
+
+        "anooshkaa": "anooshka",
+        "anushka": "anooshka",
+
+        "director sir": "director",
+        "joint director sir": "joint director",
+    }
+
+    text = text.lower()
+
+    for src, dst in replacements.items():
+        text = text.replace(src, dst)
+
+    return text
+
 
 def _normalize(text: str) -> str:
     if not text:
         return ""
-    text = text.lower().translate(_PUNCT_TABLE)
+    text = _canonicalize(text)
+    text = text.translate(_PUNCT_TABLE)
     return re.sub(r"\s+", " ", text).strip()
 
 
@@ -141,17 +185,17 @@ _DYNAMIC_QA: list[tuple[list[str], Callable[[], str]]] = [
 # common questions never miss.
 _STATIC_QA: list[tuple[list[str], list[str]]] = [
     (
-        ["what is your name", "who are you", "your name"],
+        ["tell me about yourself"],
         [
-            "I am Anooshka, the humanoid robot designed and developed at K I E T Group of Institutions.",
+            "I am Anooshka, the humanoid robot designed and developed at K I E T Deemed to be University.",
             "My name is Anooshka. I love interacting with people around me.",
         ],
     ),
     (
         ["who made you", "who created you", "who built you", "who developed you"],
         [
-            "I was developed at K I E T Group of Institutions, Ghaziabad. Mr. Heemesh Vijai programmed me as I am.",
-            "My development team includes Mr. Vunsh Tyaagee, Mr. Koonwar Singh, Mr. Heemesh Vijai, Mr. Kwaazi Jiyaur Rahmaan and Mr. Pree-yanshoo Kumaaar.",
+            "I was developed at K I E T Deemed To be University, Ghaziabad.",
+            "My development team includes Mr. Vunsh Tyaagee, Mr. Koonwar Singh, Mr. Gurv Uggurwaal, Mr. Kwaazi Jiyaur Rahmaan and Mr. Pree-yanshoo Kumaaar. Mr. Heemesh Vijai.",
         ],
     ),
     (
@@ -191,18 +235,23 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
     (
         ["where do you live", "where are you from", "where is your home", "your home"],
         [
-            "I live at K I E T Group of Institutions, Ghaziabad, in Delhi N C R.",
+            "I live at K I E T Deemed To be University, Ghaziabad, in Delhi N C R.",
         ],
     ),
     # --- KIET leadership ---
     (
-        ["who is joint director", "who is the joint director", "joint director of kiet"],
-        ["The Joint Director of K I E T Group is Dr. Manoj Goyal."],
+        ["who is Pro vice chancellor", "who is the joint director", "joint director of kiet","who is manoj goyal", "manoj goyal", "provisional chancellor"],
+        ["The Pro vice chncellor of K I E T Deemed to be University is Dr. Manoj Goyal."],
+    ),
+
+    (
+        ["who is vice chancellor", "who is the director", "director of kiet", "vice chancellor"],
+        ["The Vice chancellor of K I E T Deemed to be University is Professor Nagaraj Ramrao."],
     ),
     (
         ["who is principal", "who is the director", "who leads kiet", "who is director of kiet", "kiet director"],
         [
-            "The vision of K I E T is led by Dr. Manoj Goyal, our Joint Director, and Mr. Sachin Tyagi, the Assistant Dean of Research and Development.",
+            "The vision of K I E T is led by Dr. Manoj Goyal, our pro vice chancellor, and Mr. vibhav kumar sachan, the Assistant Dean of Research and Development.",
         ],
     ),
     (
@@ -219,9 +268,9 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
         ],
     ),
     (
-        ["where is amul", "amul counter", "amul in kiet", "amul location"],
+        ["where is healthy hut", "healthy", "healthy hut in kiet", "healthy hut location"],
         [
-            "The Amul counter in K I E T is situated in front of the MBA building, roughly in the centre of the campus. From the reception, take the straight path and turn left after the Electronics and Communication building. You will reach the Amul counter.",
+            "The healthy hut in K I E T is situated in front of the MBA building, roughly in the centre of the campus. From the reception, take the straight path and turn left after the Electronics and Communication building. You will reach the Healthy hut counter.",
         ],
     ),
     (
@@ -340,7 +389,7 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
         ],
     ),
     (
-        ["where is first year boys hostel", "where is chandragupt hostel", "first year hostel"],
+        ["where is boys hostel","where is first year boys hostel", "where is chandragupt hostel", "first year hostel"],
         [
             "The first year boys hostel is called Chandragupt and is adjacent to the main parking area. From reception, take the straight path, turn left at the ECE sign board, move straight until you find the Applied Sciences entryway. The hostel is just behind that building.",
         ],
@@ -361,6 +410,25 @@ _STATIC_QA: list[tuple[list[str], list[str]]] = [
         ["where is fourth year boys hostel", "where is vivek anand hostel", "fourth year hostel"],
         [
             "The fourth year boys hostel is called Vivek Anand, adjacent to the third year boys hostel in the southern part of campus. From reception, go straight to Computer Sciences, take the left turn, then turn right.",
+        ],
+    ),
+    (
+    ["where is placement cell", "placement office", "placement department", "CRPC"],
+    [
+        "The placement cell is located infront of the G block. Please proceed through the left pathway from the reception."
+    ],
+    ),
+
+    (
+        ["where is fee counter", "accounts office", "accounts department"],
+        [
+            "The accounts and fee section is located inside the admission office."
+        ],
+    ),
+    (
+        ["where is parking", "parking area"],
+        [
+            "The main parking area is located infront of the H block. Please take the left pathway."
         ],
     ),
 ]
@@ -420,6 +488,10 @@ class _OfflineQAIndex:
                 return True, random.choice(answers), "exact"
 
         query_kws = _keywords(query)
+        is_kiet_query = any(
+            term in norm
+            for term in _KIET_TERMS
+        )
         if query_kws:
             best: tuple[float, list[str]] | None = None
             for _entry_norm, entry_kws, answers in self._entries:
@@ -429,12 +501,15 @@ class _OfflineQAIndex:
                 if overlap == 0:
                     continue
                 score = overlap / max(len(entry_kws), 1)
+
+                if is_kiet_query:
+                    score += 0.20
                 if score >= 0.6 and (best is None or score > best[0]):
                     best = (score, answers)
             if best is not None:
                 return True, random.choice(best[1]), "keyword"
 
-        close = difflib.get_close_matches(norm, self._normalized_keys, n=1, cutoff=0.78)
+        close = difflib.get_close_matches(norm, self._normalized_keys, n=1, cutoff=0.65)
         if close:
             target = close[0]
             for entry_norm, _, answers in self._entries:

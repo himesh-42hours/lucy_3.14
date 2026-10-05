@@ -177,6 +177,7 @@ myFaceDetector = None
 visionWS= open(VISION_WS_FILE, 'r')
 lastRead= visionWS.read()
 lastFace= "Hi"
+write_current_person("none")
 
 mode= 0
 
@@ -367,8 +368,16 @@ while True:
                 if person is recognized, special wish and add to last5faces
                 else: normal hi
                 """
-                muEncodings= face_recognition.face_encodings(mu)[0]
-                matches= face_recognition.compare_faces(encodeListKnown, muEncodings, 0.48)
+                encs = face_recognition.face_encodings(
+                    mu,
+                    num_jitters=5
+                )
+
+                if not encs:
+                    continue
+
+                muEncodings = encs[0]
+                matches= face_recognition.compare_faces(encodeListKnown, muEncodings, 0.55)
                 faceDis= face_recognition.face_distance(encodeListKnown, muEncodings)
                 matchIndex= np.argmin(faceDis)
 
@@ -383,6 +392,8 @@ while True:
 
                 if shouldCheck and matches[matchIndex]:
                     name= classNames[matchIndex]
+                    print(f"[VISION] name={name}")
+                    print(f"[VISION] last5Faces={last5Faces}")
                     if name not in last5Faces:
                         if len(last5Faces)>=5:
                             last5Faces.pop(0)
@@ -422,9 +433,9 @@ while True:
                             
                             #Last seen file update
 
-                            lastSeenFile= open(LAST_SEEN_FILE, 'w')
-                            lastSeenDate= lastSeenFile.write(todaysDate.strftime("%d-%m-%Y"))
-                            lastSeenFile.close()
+                            #lastSeenDate= lastSeenFile.write(todaysDate.strftime("%d-%m-%Y"))
+                            #lastSeenFile= open(LAST_SEEN_FILE, 'w')
+                            #lastSeenFile.close()
 
                             # To monitoring system
                             moniWS= open(MONITOR_WS_FILE, 'a')

@@ -40,6 +40,10 @@ def writeToJaw(gesture: str) -> None:
     append_message(CONTROL_FILES["jaw"], gesture)
 
 
+def writeToGardan(gesture: str) -> None:
+    append_message(CONTROL_FILES["gardan"], gesture)
+
+
 def writeToTestLog(text: str) -> None:
     append_message(LOG_FILES["test"], text)
 

@@ -13,7 +13,7 @@ email = 'himeshvijay89@gmail.com'
 password = 'Hivi@862004'
 
 # Email details
-subject = 'Qaid Mein Bulbul'
+subject = 'na ji na '
 recipient = 'himeshvijay89@gmail.com'
 body = 'Heya pai. Ki haal chaal? Sab changa? Mai aa rahi hu. Super soon! 😊😁❣'
 

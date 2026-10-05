@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+mic_respeaker
 
 # Python
 __pycache__/
@@ -20,3 +21,27 @@ __pycache__/
 # OS/editor
 .DS_Store
 .vscode/
+*.db
+# Logs
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ROS
+log/
+install/
+build/
+
+# Temporary files
+*.tmp
+*.bak

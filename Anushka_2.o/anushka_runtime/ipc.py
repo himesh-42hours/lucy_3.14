@@ -56,6 +56,10 @@ def reset_runtime_state() -> None:
     for path in STATUS_FILES.values():
         write_text(path, "")
     write_text(LOG_FILES["conversation"], "")
+    # Presence is session-only state. If we keep the previous name here,
+    # the bot can "remember" the last face after a reboot, which is
+    # confusing for the who-am-I flow.
+    write_text(LOG_FILES["current_people"], "none")
 
 
 def _iter_paths(paths: Iterable[Path]) -> Iterable[Path]:

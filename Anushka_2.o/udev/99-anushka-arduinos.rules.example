@@ -1,0 +1,15 @@
+# Copy this file to /etc/udev/rules.d/99-anushka-arduinos.rules
+# Replace the serial number values with the real ones from your boards.
+#
+# Find them with:
+#   udevadm info -a -n /dev/ttyACM0 | grep '{serial}' -m 1
+# or:
+#   python3 -m serial.tools.list_ports -v
+#sudo nano /etc/udev/rules.d/99-anushka-arduinos.rules
+#sudo udevadm control --reload-rules
+#sudo udevadm trigger
+
+SUBSYSTEM=="tty", ATTRS{serial}=="11827551267113917665", SYMLINK+="anushka_left_arm", GROUP="dialout", MODE="0660"
+SUBSYSTEM=="tty", ATTRS{serial}=="11827551267124254970", SYMLINK+="anushka_right_arm", GROUP="dialout", MODE="0660"
+SUBSYSTEM=="tty", ATTRS{serial}=="14101", SYMLINK+="anushka_head", GROUP="dialout", MODE="0660"
+SUBSYSTEM=="tty", ATTRS{serial}=="11827551267161254970", SYMLINK+="anushka_base", GROUP="dialout", MODE="0660"
