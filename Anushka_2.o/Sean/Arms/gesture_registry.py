@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import re
 
 
 @dataclass(frozen=True)
@@ -12,27 +11,12 @@ class GestureSpec:
     phrases: tuple[str, ...]
 
 
-# Keep this registry in sync with `Arms/arms_controller.py`.
-# Add a new entry here when you want speech/hearing to recognize a phrase,
-# and add the same numeric code to the Arduino/Python gesture executor.
 GESTURES: tuple[GestureSpec, ...] = (
     GestureSpec(
         code="12",
         name="salute",
         reply="Certainly. Saluting now.",
-        phrases=("salute", "do salute", "give salute", "give a do salute", "do salutee", "salot", "salut", "perform salute", "jai hind", "jai heend", "jay heend"),
-    ),
-    GestureSpec(
-        code="6",
-        name="raise_hand",
-        reply="Raising my right hand.",
-        phrases=("raise hand", "raise your hand", "lift hand", "lift your hand"),
-    ),
-    GestureSpec(
-        code="7",
-        name="raise_both_hands",
-        reply="Raising both hands.",
-        phrases=("raise both hands", "raise both arms", "lift both hands"),
+        phrases=("salute", "do salute", "give salute"),
     ),
     GestureSpec(
         code="3",
@@ -95,20 +79,11 @@ BY_CODE = {spec.code: spec for spec in GESTURES}
 BY_NAME = {spec.name: spec for spec in GESTURES}
 
 
-def _normalize(text: str) -> str:
-    # Replace punctuation with spaces so phrases like "do salute." still match.
-    cleaned = re.sub(r"[^a-z0-9]+", " ", text.lower())
-    normalized = re.sub(r"\s+", " ", cleaned).strip()
-    return f" {normalized} "
-
-
 def find_gesture_for_query(query: str) -> GestureSpec | None:
-    lowered = _normalize(query)
+    lowered = f" {query.strip().lower()} "
     for spec in GESTURES:
         for phrase in spec.phrases:
-            phrase_norm = re.sub(r"[^a-z0-9]+", " ", phrase.lower())
-            phrase_norm = re.sub(r"\s+", " ", phrase_norm).strip()
-            if f" {phrase_norm} " in lowered:
+            if f" {phrase.lower()} " in lowered:
                 return spec
     return None
 

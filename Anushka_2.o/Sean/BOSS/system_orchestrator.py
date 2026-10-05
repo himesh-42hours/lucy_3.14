@@ -18,7 +18,7 @@ for entry in (str(REPO_ROOT), str(SEAN_ROOT), str(DEPS_ROOT)):
         sys.path.insert(0, entry)
 
 from anushka_runtime.config import (
-    BASE_MEGA_PORT,
+    AUX_MEGA_PORT,
     CAMERA_SOURCE,
     CONTROL_FILES,
     ENABLE_EARLY_GREETING,

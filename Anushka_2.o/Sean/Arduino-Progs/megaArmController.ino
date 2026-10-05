@@ -24,7 +24,8 @@
   Set ARM_IS_LEFT and update pin/reverse arrays for each Mega.
 */
 
-#define ARM_IS_LEFT 0
+  ARM:a1,a2,a3,a4
+  HAND:f1,f2,f3,f4,f5
 
 #if ARM_IS_LEFT
 const uint8_t ARM_PINS[11] = {2, 3, 4, 5, 6, 7, 22, 23, 24, 25, 26};

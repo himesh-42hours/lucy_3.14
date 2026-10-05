@@ -36,6 +36,8 @@ FACE_DISTANCE_THRESHOLD = 0.55
 
 from Vision.profile_store import canonical_display_name, greeting_for_name
 
+from Vision.profile_store import canonical_display_name, greeting_for_name
+
 
 def _diag(message: str) -> None:
     try:

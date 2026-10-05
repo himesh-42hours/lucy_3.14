@@ -43,7 +43,6 @@ try:
         ensure_profile,
         gesture_for_name,
         greeting_for_name,
-        is_vip,
     )
     _vision_stage("vision: core helpers imported")
     import cv2
@@ -121,11 +120,7 @@ def load_known_faces():
             continue
 
         loaded_images.append(img)
-        base_name = os.path.splitext(cls)[0]
-
-        base_name = base_name.split("_")[0]
-
-        loaded_names.append(base_name)
+        loaded_names.append(os.path.splitext(cls)[0])
 
     if skipped:
         _vision_stage(f"vision: skipped {len(skipped)} invalid face image(s)")
@@ -386,10 +381,10 @@ while True:
                 faceDis= face_recognition.face_distance(encodeListKnown, muEncodings)
                 matchIndex= np.argmin(faceDis)
 
-                if matches[matchIndex] and faceDis[matchIndex] <= 0.55:
+                if matches[matchIndex] and faceDis[matchIndex] <= 0.48:
                     nameToWrite= canonical_display_name(classNames[matchIndex])
                     write_current_person(nameToWrite)
-                elif 0.55 < faceDis[matchIndex] <= 0.65:
+                elif 0.48 < faceDis[matchIndex] <= 0.52:
                     nameToWrite= canonical_display_name(classNames[matchIndex])
                     write_current_person(f"someone like {nameToWrite}")
                 else:
@@ -415,25 +410,26 @@ while True:
                         lowered_name = name.lower().strip()
                         display_name = canonical_display_name(name)
 
-                        gesture = gesture_for_name(name)
+                        if "father" in lowered_name or "himesh" in lowered_name:
+                            todaysDate= datetime.datetime.now()
+                            print("Entered inside")
 
-                        greeting = greeting_for_name(name)
+                            lastSeenFile= open(LAST_SEEN_FILE, 'r')
+                            lastSeenDate= lastSeenFile.read()
+                            lastSeenFile.close()
+                            my_time= datetime.time()
+                            lastSeenPoora= datetime.datetime.combine(datetime.datetime.strptime(lastSeenDate,"%d-%m-%Y"), my_time)
+                            print(lastSeenPoora)
 
-                        if is_vip(name):
+                            timeDelta= todaysDate - lastSeenPoora
+                            print(str(timeDelta))
+                            if timeDelta.days > 30:
+                                writeToHaath("2")
+                                speak("I missed you so much sire ")
 
-                            print(
-                                f"[vision] VIP detected: {name}"
-                            )
-
-                            writeToHaath(gesture)
-
-                            speak(greeting)
-
-                        else:
-
-                            writeToHaath(gesture)
-
-                            speak(greeting)
+                            else:
+                                writeToHaath("3")    #Shake hand gesture
+                                speak("Hello. Nice to meet you Himesh Vijay")
                             
                             #Last seen file update
 
@@ -441,10 +437,17 @@ while True:
                             #lastSeenFile= open(LAST_SEEN_FILE, 'w')
                             #lastSeenFile.close()
 
-                            ## To monitoring system
-                            #moniWS= open(MONITOR_WS_FILE, 'a')
-                            #moniWS.write("LastSeen- "+todaysDate.strftime("%d-%m-%Y"))
-                            #moniWS.close()
+                            # To monitoring system
+                            moniWS= open(MONITOR_WS_FILE, 'a')
+                            moniWS.write("LastSeen- "+todaysDate.strftime("%d-%m-%Y"))
+                            moniWS.close()
+                        
+                        elif "manoj" in lowered_name: #Special known people
+                            writeToHaath(gesture_for_name(name, "3"))
+                            speak(greeting_for_name(name))
+                        else:   #other known people
+                            writeToHaath(gesture_for_name(name))
+                            speak(greeting_for_name(name))
 
                         #region Special Person
                         #todo Here

@@ -67,7 +67,6 @@ def resolve_profile(raw_name: str) -> dict:
         "display_name": pretty_name(raw_name),
         "greeting": f"Jaye heend {pretty_name(raw_name)}",
         "gesture": DEFAULT_GESTURE,
-        "vip": False,
         "aliases": [target] if target else [],
     }
 
@@ -81,9 +80,6 @@ def greeting_for_name(raw_name: str) -> str:
     profile = resolve_profile(raw_name)
     return profile.get("greeting", f"Jaye heend {canonical_display_name(raw_name)}")
 
-def is_vip(raw_name: str) -> bool:
-    profile = resolve_profile(raw_name)
-    return bool(profile.get("vip", False))
 
 def gesture_for_name(raw_name: str, default: str = DEFAULT_GESTURE) -> str:
     profile = resolve_profile(raw_name)

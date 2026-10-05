@@ -2,85 +2,37 @@
   "father": {
     "display_name": "Himesh Vijay",
     "greeting": "Hello. Nice to meet you Himesh Vijay.",
-    "gesture": "12",
-    "vip": false,
+    "gesture": "3",
     "aliases": ["father", "himesh"]
   },
   "Dr_Manoj_Goyal": {
     "display_name": "Doctor Manoj Goyal",
     "greeting": "Pruhnaum sir. Nice to meet you Doctor Manoj Goyal.",
-    "gesture": "12",
-    "vip": false,
+    "gesture": "3",
     "aliases": ["manoj", "dr_manoj_goyal", "doctor manoj goyal"]
   },
   "Sareesh_Agarwal": {
     "display_name": "Sareesh Agarwal",
     "greeting": "Hello sir. Nice to meet you Mister Sareesh Agarwal.",
-    "gesture": "12",
-    "vip": false,
+    "gesture": "3",
     "aliases": ["sareesh", "agarwal"]
   },
   "Suneel_Gupta": {
     "display_name": "Suneel Gupta",
     "greeting": "Hello sir. Nice to meet you Mister Suneel Gupta.",
-    "gesture": "12",
-    "vip": false,
+    "gesture": "3",
     "aliases": ["suneel", "gupta"]
   },
   "beta ji": {
     "display_name": "Beta ji",
-    "greeting": "Hello there. Nice to meet you vunsh tyagi.",
-    "gesture": "12",
-    "vip": false,
+    "greeting": "Hello there. Nice to meet you.",
+    "gesture": "6",
     "aliases": ["beta ji"]
   },
   "mama ji": {
     "display_name": "Mama ji",
-    "greeting": "Hello there. Nice to meet you kunwur baby.",
-    "gesture": "12",
-    "vip": false,
+    "greeting": "Hello there. Nice to meet you.",
+    "gesture": "6",
     "aliases": ["mama ji"]
-  },
-  "tanu": {
-    "display_name": "Tanu",
-    "greeting": "Hello there. Nice to meet you Tanu Ma'am.",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["tanu"]
-  },
-  "sachin": {
-    "display_name": "Mr.Sachin tyagi",
-    "greeting": "Hello there. Nice to meet you Mister Sachin Tyagi.",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["sachin sir"]
-  },
-  "vibhav": {
-    "display_name": "Mr.Vibhav Kumar Sachan",
-    "greeting": "Hello there. Nice to meet you Mister Vibhav Kumar sachan, Dean ECE Department. .",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["Vibhav sir"]
-  },
-  "ruchita": {
-    "display_name": "Ruchita Gautam",
-    "greeting": "Hello there. Nice to meet you Ruchita Ma'am.",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["ruchita sir"]
-  },
-  "sudheer": {
-    "display_name": "Mr. Sudheer saloonia",
-    "greeting": "Hello there. Nice to meet you Sudheer Sir.",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["Sudheer sir"]
-  },
-  "nagaraj": {
-    "display_name": "Mr. Nagaraj Ramrao",
-    "greeting": "Hello there. Nice to meet you Professor Nagaraj Ramrao.",
-    "gesture": "12",
-    "vip": false,
-    "aliases": ["nagaraj sir"]
   }
 }
